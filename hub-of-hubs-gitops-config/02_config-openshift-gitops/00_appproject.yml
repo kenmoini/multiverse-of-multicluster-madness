@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  creationTimestamp: null
+  name: hub-of-hubs-cluster-apps
+  namespace: openshift-gitops
+spec:
+  clusterResourceWhitelist:
+    #- group: 'argoproj.io/v1alpha1'
+    #  kind: 'Application'
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: '*'
+      server: '*'
+  sourceRepos:
+    - '*'

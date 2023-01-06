@@ -1,0 +1,18 @@
+# vault-values.yaml
+
+global:
+  openshift: true
+
+server:
+  ha:
+    enabled: false
+  dev:
+    enabled: true
+  route:
+    enabled: true
+    host: ''
+    #tls:
+    #  termination: edge
+
+ui:
+  enabled: true
