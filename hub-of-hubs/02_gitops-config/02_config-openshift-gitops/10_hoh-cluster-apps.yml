@@ -1,3 +1,6 @@
+---
+# This ArgoCD Application is used to load in all the other ArgoCD Applications that are used to manage the Hub of Hubs cluster
+# It will sync down the gitops-apps directory and all sub-directories, which are atomic Applications
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,9 +12,7 @@ spec:
   source:
     repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
     targetRevision: HEAD
-    ## Path is the repo directory that containers the cluster(s) configuration and deployment manifests
-    path: hub-of-hubs/composition
-    ## Enable recursive sub-directory search to enable management of multiple cluster from this single Application
+    path: hub-of-hubs/gitops-apps
     directory:
       recurse: true
   project: hub-of-hubs-cluster-apps
