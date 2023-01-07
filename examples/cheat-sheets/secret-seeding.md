@@ -4,11 +4,20 @@ Out of the box the clusters leverage a quickly bootstrapped Vault instance with 
 
 Assuming you'll be delivering this demonstration on a ROSA Hub-of-Hub cluster, and at least one Geo-Hub cluster that is deliver ZTP-as-a-Service with Spoke clusters, then you should need the following Secrets made:
 
+- An k8s/OCP Secret for the token used by the External Secrets Operator to authenticate to Vault
 - Credentials to read this Git repo, called `hoh-git-reader`
 - Credentials to push to another (or this) Git repo for the Geo-Hub ZTP clusters called `geo-ztp-git-credentials`
 - Credentials to ZTP to vSphere clusters called `geo-ztp-vsphere-credentials`
 - Container Image Pull Credentials for the Geo-Hub ZTP clusters called `geo-ztp-image-pull-credentials`
 - SSH Key Pair for the Geo-Hub ZTP clusters called `geo-ztp-ssh-keypair`
+
+## `vault-token-auth`
+
+Create the k8s/OCP Secret for the token used by the External Secrets Operator to authenticate to Vault.  Assuming you're using the default Vault deployment in dev mode then the token is `root`.
+
+```bash
+oc create secret generic vault-token-auth --from-literal=token=root -n vault
+```
 
 ## `hoh-git-reader`
 

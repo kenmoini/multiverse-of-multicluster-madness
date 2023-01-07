@@ -1,7 +1,7 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  creationTimestamp: null
   name: hub-of-hubs-cluster-apps
   namespace: openshift-gitops
 spec:
