@@ -11,8 +11,8 @@ server:
   route:
     enabled: true
     host: ''
-    #tls:
-    #  termination: edge
+    tls:
+      termination: edge
 
 ui:
   enabled: true

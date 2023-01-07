@@ -1,0 +1,10 @@
+#---
+#apiVersion: operators.coreos.com/v1
+#kind: OperatorGroup
+#metadata:
+#  creationTimestamp: null
+#  name: openshift-gitops
+#  namespace: openshift-gitops
+#spec:
+#  targetNamespaces:
+#    - openshift-gitops

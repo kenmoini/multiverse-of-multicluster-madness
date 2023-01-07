@@ -19,13 +19,13 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
 Most mutli-cluster architectures operate in a "Hub and Spoke" model, and can be extended even further by operating a "Hub of Hubs" pattern.  In an OpenShift context, there are many ways to bootstrap a Hub or Hub of Hub cluster, and arguably the method with the lowest level of effort and maintenance would be to use the OpenShift GitOps Operator (ArgoCD) to bootstrap things.  So then all you have to do is:
 
 1. Start with a fresh OpenShift cluster
-2. `oc apply -f hub-of-hubs-bootstrap/`
+2. `oc apply -f hub-of-hubs/bootstrap/`
 3. *Do some Secrets seeding stuff...*
-4. `oc apply -f hub-of-hubs-gitops-config/`
+4. `oc apply -f hub-of-hubs/gitops-config/`
 5. ??????
 6. PROFIT!!!!!1
 
-From there, ArgoCD will sync things to that repo in order to install Red Hat Advanced Cluster Management and a Basic MultiClusterHub.  You could add additional things to the `hub-bootstrap/` directory to install other things, however from here forward this repository will leverage RHACM to manage the clusters via Policies.
+From there, ArgoCD will sync things to that repo in order to install Red Hat Advanced Cluster Management and a Basic MultiClusterHub.  You could add additional things to the `hub-of-hubs/bootstrap/` directory to install other things, however from here forward this repository will leverage RHACM to manage the clusters via Policies.
 
 ### Secret Seeding
 
@@ -38,16 +38,27 @@ At many points you'll need to use some secrets for things such as authenticating
 - Container Pull Secrets
 - SSH Keys
 
+## Prerequisites
+
+### Cluster Resources
+
+#### Hub of Hubs
+
+- Please just use a managed service for this, like Red Hat OpenShift Service on AWS (ROSA) or Azure Red Hat OpenShift (ARO).
+- XX GB of RAM
+- YY GB of Disk
+- ZZ vCPUs
+
 ## Directory Structure
 
-- `hub-of-hubs-bootstrap/` - The first thing applied to the Hub of Hubs cluster
+- `hub-of-hubs/bootstrap/` - The first thing applied to the Hub of Hubs cluster
   - `install-openshift-gitops/` - Installs OpenShift GitOps (ArgoCD)
   - `install-hashicorp-vault/` - Installs Hashicorp Vault for Secrets Management
-- `hub-of-hubs-gitops-config/` - After Secrets seeding, this is applied to the Hub of Hubs cluster to start syncing configuration, policies, and workloads
+- `hub-of-hubs/gitops-config/` - After Secrets seeding, this is applied to the Hub of Hubs cluster to start syncing configuration, policies, and workloads
   - `01_deploy-openshift-gitops/` - Deploys the OpenShift GitOps (ArgoCD) instance
-  - `02_config-openshift-gitops/` - Configures the OpenShift GitOps (ArgoCD) instance, deploys an ArgoCD Application that points to the public upstream repo on GitHub and the `hub-of-hubs-gitops-apps/` directory
-- `hub-of-hubs-gitops-apps/` - A collection of ArgoCD Applications that load the individual manifest groups from the `hub-of-hubs-composition/` directory, could easily point to separate repos
-- `hub-of-hubs-composition/` - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
+  - `02_config-openshift-gitops/` - Configures the OpenShift GitOps (ArgoCD) instance, deploys an ArgoCD Application that points to the public upstream repo on GitHub and the `hub-of-hubs/gitops-apps/` directory
+- `hub-of-hubs/gitops-apps/` - A collection of ArgoCD Applications that load the individual manifest groups from the `hub-of-hubs/composition/` directory, could easily point to separate repos
+- `hub-of-hubs/composition/` - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
   - rhacm-install/ (installs RHACM with OLM CRs on HoH)
   - rhacm-config/ (sets policies for HoH, those forced on Geos, and forced on their Spokes)
     - policies/
@@ -64,5 +75,6 @@ At many points you'll need to use some secrets for things such as authenticating
       - spoke-rhacm-config/ (cluster-role=spoke-cluster)
       - spoke-rhacs-securedcluster/
       - spoke-idp/
+      - root-ca/ (vendor=OpenShift) sets up a root CA for all clusters
       - global-rbac/ (allows our users to get access to what they need)
       - hoh-secret-courier/ (copies secrets from NS on HoH to other OCP clusters' NS')
