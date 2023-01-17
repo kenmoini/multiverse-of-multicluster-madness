@@ -16,15 +16,33 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
 
 ### Directory Structure
 
-- `hub-of-hubs/bootstrap/` - The first thing applied to the Hub of Hubs cluster
-  - `install-openshift-gitops/` - Installs OpenShift GitOps (ArgoCD)
-  - `install-hashicorp-vault/` - Installs Hashicorp Vault for Secrets Management
-  - `install-external-secrets/` - Installs External Secrets Operator
-- `hub-of-hubs/gitops-config/` - After Secrets seeding, this is applied to the Hub of Hubs cluster to start syncing configuration, policies, and workloads via ArgoCD
-  - `00_eso-config` - Configures the External Secrets Operator to use the Vault instance
-  - `01_deploy-openshift-gitops/` - Deploys the OpenShift GitOps (ArgoCD) instance
-  - `02_config-openshift-gitops/` - Configures the OpenShift GitOps (ArgoCD) instance, deploys an ArgoCD Application that points to the public upstream repo on GitHub and the `hub-of-hubs/gitops-apps/` directory
-- `hub-of-hubs/gitops-apps/` - A collection of ArgoCD Applications that load the individual manifest groups from the `hub-of-hubs/composition/` directory, could easily point to separate repos
+```
+📦hub-of-hubs
+ ┣ 📂01_bootstrap - The first thing applied to the Hub of Hubs cluster
+ ┃ ┣ 📂install-external-secrets - Installs OpenShift GitOps (ArgoCD)
+ ┃ ┣ 📂install-hashicorp-vault - Installs Hashicorp Vault for Secrets Management
+ ┃ ┗ 📂install-openshift-gitops - Installs External Secrets Operator
+ ┣ 📂02_gitops-config - After Secrets seeding, this is applied to the Hub of Hubs cluster to start syncing configuration, policies, and workloads via ArgoCD
+ ┃ ┣ 📂00_eso-config - Configures the External Secrets Operator to use the in-cluster Vault instance
+ ┃ ┣ 📂01_deploy-openshift-gitops - Deploys the OpenShift GitOps (ArgoCD) instance
+ ┃ ┗ 📂02_config-openshift-gitops - Configures the OpenShift GitOps (ArgoCD) instance, deploys an ArgoCD Application that points to the public upstream repo on GitHub and the `hub-of-hubs/gitops-apps/` directory
+ ┣ 📂gitops-apps - A collection of ArgoCD Applications that load the individual manifest groups from the `hub-of-hubs/composition/` directory, could easily point to separate repos
+ ┃ ┣ 📂external-secrets
+ ┃ ┣ 📂rhacm-config
+ ┃ ┣ 📂rhacm-installed
+ ┃ ┗ 📂rhacm-observability
+ ┗ 📂manifests
+ ┃ ┣ 📂external-secrets
+ ┃ ┣ 📂rhacm-config
+ ┃ ┣ 📂rhacm-install
+ ┃ ┗ 📂rhacm-observability
+```
+
+- `hub-of-hubs/gitops-config/`
+  - `00_eso-config` - 
+  - `01_deploy-openshift-gitops/` - 
+  - `02_config-openshift-gitops/`
+- `hub-of-hubs/gitops-apps/`
 - `hub-of-hubs/composition/` - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
   - rhacm-install/ (installs RHACM with OLM CRs on HoH)
   - rhacm-config/ (sets policies for HoH, those forced on Geos, and forced on their Spokes)
