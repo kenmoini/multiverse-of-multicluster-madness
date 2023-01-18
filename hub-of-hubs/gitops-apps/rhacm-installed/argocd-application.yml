@@ -9,6 +9,7 @@ spec:
       kind: "*"
       jsonPointers:
         - /metadata/annotations
+        - /metadata/labels
     - group: "v1"
       kind: "Namespace"
       jsonPointers:
