@@ -31,19 +31,17 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
  ┃ ┣ 📂rhacm-config
  ┃ ┣ 📂rhacm-installed
  ┃ ┗ 📂rhacm-observability
- ┗ 📂manifests
- ┃ ┣ 📂external-secrets
- ┃ ┣ 📂rhacm-config
- ┃ ┣ 📂rhacm-install
- ┃ ┗ 📂rhacm-observability
+ ┗ 📂manifests - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
+ ┃ ┣ 📂external-secrets - Managed Secrets pulled in via External Secrets Operator
+ ┃ ┣ 📂rhacm-installed - Installs the RHACM Operator
+ ┃ ┣ 📂rhacm-installed - Installs the RHACM Operator
+ ┃ ┗ 📂rhacm-observability - Installs the RHACM Observability components
+ ┗ 📂manifests -
+ ┗ 📂manifests -
 ```
 
-- `hub-of-hubs/gitops-config/`
-  - `00_eso-config` - 
-  - `01_deploy-openshift-gitops/` - 
-  - `02_config-openshift-gitops/`
-- `hub-of-hubs/gitops-apps/`
-- `hub-of-hubs/composition/` - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
+
+- `hub-of-hubs/manifests/`
   - rhacm-install/ (installs RHACM with OLM CRs on HoH)
   - rhacm-config/ (sets policies for HoH, those forced on Geos, and forced on their Spokes)
     - policies/
