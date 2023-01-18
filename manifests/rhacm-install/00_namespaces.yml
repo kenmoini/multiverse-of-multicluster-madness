@@ -12,13 +12,13 @@ metadata:
   name: multicluster-engine
   annotations:
     scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: hive
-  annotations:
-    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: hive
+#  annotations:
+#    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
 ---
 apiVersion: v1
 kind: Namespace
