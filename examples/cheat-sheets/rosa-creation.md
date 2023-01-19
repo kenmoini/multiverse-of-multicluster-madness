@@ -41,4 +41,12 @@ rosa create oidc-provider --cluster hoh-rosa --region us-east-2
 ## Watch the cluster
 rosa describe cluster -c hoh-rosa --region us-east-2
 rosa logs install -c hoh-rosa --watch --region us-east-2
+
+## Create the IDP
+rosa create idp --cluster=hoh-rosa --region=us-east-2 --name=RedHatSSO --type=google --hosted-domain=redhat.com \
+  --client-id=$(cat /mnt/remoteWork/.gcp-oauth-cid) \
+  --client-secret=$(cat /mnt/remoteWork/.gcp-oauth-cs)
+
+## Attach the role
+rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="kmoini@redhat.com"
 ```
