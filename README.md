@@ -33,10 +33,10 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
  ┃ ┗ 📂rhacm-observability
  ┗ 📂manifests - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
  ┃ ┣ 📂external-secrets - Managed Secrets pulled in via External Secrets Operator
- ┃ ┣ 📂rhacm-installed - Installs the RHACM Operator
+ ┃ ┣ 📂additional-trust-bundle - Adds additional Trusted Root Certificate Authorities to OpenShift
+ ┃ ┣ 📂idp-base-config - Base OpenShift OAuth Identity Provider configuration
  ┃ ┣ 📂rhacm-installed - Installs the RHACM Operator
  ┃ ┗ 📂rhacm-observability - Installs the RHACM Observability components
- ┗ 📂manifests -
  ┗ 📂manifests -
 ```
 

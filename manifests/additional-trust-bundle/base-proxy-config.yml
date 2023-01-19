@@ -1,0 +1,10 @@
+apiVersion: config.openshift.io/v1
+kind: Proxy
+metadata:
+  name: cluster
+spec:
+  trustedCA:
+    name: root-certificate-bundle
+  #httpProxy: 'http://192.168.42.31:3128/'
+  #httpsProxy: 'http://192.168.42.31:3128/'
+  #noProxy: '.svc.cluster.local,192.168.0.0/16,.kemo.network,.kemo.labs'
