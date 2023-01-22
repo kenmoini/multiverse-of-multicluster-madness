@@ -18,6 +18,9 @@ curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshi
 
 ## ROSA Getting Started: https://console.redhat.com/openshift/create/rosa/getstarted
 
+## Run the AWS Configuration if you haven't before
+aws configure
+
 ## Check for AWS Roles
 aws iam get-role --role-name "AWSServiceRoleForElasticLoadBalancing"
 # Create if it doesn't exist
@@ -49,4 +52,6 @@ rosa create idp --cluster=hoh-rosa --region=us-east-2 --name=RedHatSSO --type=go
 
 ## Attach the role
 rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="kmoini@redhat.com"
+rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="mtipton@redhat.com"
+rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="tsikes@redhat.com"
 ```

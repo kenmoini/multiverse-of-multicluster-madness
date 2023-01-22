@@ -78,6 +78,8 @@ oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-vsphere-credentials \
 Create the Geo-local Image Pull credentials to ZTP to vSphere clusters.  This could change depending on if you have a disconnected/private registry available for container images instead of pulling them from the internet.
 
 ```bash
+oc rsh -n vault vault-0 vault kv put -mount=secret pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
+oc rsh -n vault vault-0 vault kv put -mount=secret hoh-pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
 oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-image-pull-credentials dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
 ```
 
@@ -98,7 +100,10 @@ Some times for different adaptations of this demo environment you may have thing
 
 ```bash
 ## AWS creds example
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-aws-creds aws_access_key_id=REDACTED aws_secret_access_key=REDACTED
+aws_access_key=$(awk -F "=" '/aws_access_key_id/ {print $2}' ~/.aws/credentials | tr -d " ")
+aws_secret_key=$(awk -F "=" '/aws_secret_access_key/ {print $2}' ~/.aws/credentials | tr -d " ")
+
+oc rsh -n vault vault-0 vault kv put -mount=secret hoh-aws-creds aws_access_key_id=$aws_access_key aws_secret_access_key=$aws_secret_key
 
 ## Azure creds example
 oc rsh -n vault vault-0 vault kv put -mount=secret hoh-azure-creds azure_client_id=REDACTED azure_client_secret=REDACTED azure_tenant_id=REDACTED azure_subscription_id=REDACTED
