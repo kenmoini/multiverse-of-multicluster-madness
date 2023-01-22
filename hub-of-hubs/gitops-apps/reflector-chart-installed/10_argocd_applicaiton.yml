@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reflector
+  namespace: openshift-gitops
+spec:
+  project: helm-installed
+  source:
+    chart: reflector
+    repoURL: https://emberstack.github.io/helm-charts
+    targetRevision: v6.1.47
+    helm:
+      releaseName: reflector
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: reflector
