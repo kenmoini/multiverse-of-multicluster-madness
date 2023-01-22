@@ -14,3 +14,8 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true # overrides changes made on the cluster that drift from git state
