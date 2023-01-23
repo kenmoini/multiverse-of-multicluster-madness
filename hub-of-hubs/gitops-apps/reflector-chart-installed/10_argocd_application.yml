@@ -11,6 +11,8 @@ spec:
     targetRevision: v6.1.47
     helm:
       releaseName: reflector
+      #valueFiles:
+      #- values.yaml
   destination:
     server: "https://kubernetes.default.svc"
     namespace: reflector

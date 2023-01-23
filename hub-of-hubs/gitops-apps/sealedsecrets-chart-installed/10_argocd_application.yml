@@ -11,6 +11,8 @@ spec:
     targetRevision: 2.7.2
     helm:
       releaseName: sealed-secrets
+      #valueFiles:
+      #- values.yaml
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
