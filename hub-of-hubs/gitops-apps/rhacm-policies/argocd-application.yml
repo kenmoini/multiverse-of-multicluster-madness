@@ -10,6 +10,7 @@ spec:
       jsonPointers:
         - /metadata/annotations
         - /metadata/labels
+        - /status
   destination:
     server: 'https://kubernetes.default.svc'
   source:
@@ -22,10 +23,10 @@ spec:
       recurse: true
   project: hub-of-hubs-cluster-apps
   syncPolicy: {}
-    #automated:
-    #  prune: true
-    #  allowEmpty: true
-    #  #selfHeal: true # overrides changes made on the cluster that drift from git state
-    #syncOptions:
-    #  - CreateNamespace=true
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true # overrides changes made on the cluster that drift from git state
+    syncOptions:
+      - CreateNamespace=true
       
