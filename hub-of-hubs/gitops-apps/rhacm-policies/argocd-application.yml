@@ -22,7 +22,7 @@ spec:
     directory:
       recurse: true
   project: hub-of-hubs-cluster-apps
-  syncPolicy: {}
+  syncPolicy:
     automated:
       prune: true
       allowEmpty: true
