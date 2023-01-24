@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacm-policies
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacm-channels
