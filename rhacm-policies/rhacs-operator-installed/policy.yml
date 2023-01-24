@@ -1,0 +1,69 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: rhacs-operator-installed
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhacs-ns
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: rhacs-operator
+          pruneObjectBehavior: DeleteIfCreated
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhacs-operator-group
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1
+                kind: OperatorGroup
+                metadata:
+                  name: rhacs-operatorgroup
+                  namespace: rhacs-operator
+                spec: {}
+          pruneObjectBehavior: DeleteIfCreated
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhacs-operator-subscription
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  name: rhacs-operator
+                  namespace: rhacs-operator
+                spec:
+                  name: rhacs-operator
+                  channel: latest
+                  installPlanApproval: Automatic
+                  source: redhat-operators
+                  sourceNamespace: openshift-marketplace
+          pruneObjectBehavior: DeleteIfCreated
