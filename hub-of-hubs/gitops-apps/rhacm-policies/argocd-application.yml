@@ -9,6 +9,7 @@ spec:
       kind: "*"
       jsonPointers:
         - /metadata/annotations
+        - /metadata/labels
   destination:
     server: 'https://kubernetes.default.svc'
   source:
