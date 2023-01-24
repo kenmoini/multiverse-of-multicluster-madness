@@ -21,11 +21,11 @@ spec:
     directory:
       recurse: true
   project: hub-of-hubs-cluster-apps
-  syncPolicy:
-    automated:
-      prune: true
-      allowEmpty: true
-      selfHeal: true # overrides changes made on the cluster that drift from git state
-    syncOptions:
-      - CreateNamespace=true
+  syncPolicy: {}
+    #automated:
+    #  prune: true
+    #  allowEmpty: true
+    #  #selfHeal: true # overrides changes made on the cluster that drift from git state
+    #syncOptions:
+    #  - CreateNamespace=true
       
