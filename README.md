@@ -71,9 +71,9 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
 Most mutli-cluster architectures operate in a "Hub and Spoke" model, and can be extended even further by operating a "Hub of Hubs" pattern.  In an OpenShift context, there are many ways to bootstrap a Hub or Hub of Hub cluster, and arguably the method with the lowest level of effort and maintenance would be to use the OpenShift GitOps Operator (ArgoCD) to bootstrap things.  So then all you have to do is:
 
 1. Start with a fresh OpenShift cluster
-2. `oc apply -f hub-of-hubs/bootstrap/`
+2. `oc apply --recursive -f hub-of-hubs/01_bootstrap/`
 3. *Do some Secrets seeding stuff...*
-4. `oc apply -f hub-of-hubs/gitops-config/`
+4. `oc apply --recursive -f hub-of-hubs/02_gitops-config/`
 5. ??????
 6. PROFIT!!!!!1
 
