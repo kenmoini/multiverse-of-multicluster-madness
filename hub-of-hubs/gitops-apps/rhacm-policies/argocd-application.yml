@@ -3,6 +3,8 @@
 # metadata:
 #   name: rhacm-policies
 #   namespace: openshift-gitops
+#   annotations:
+#     argocd.argoproj.io/compare-options: IgnoreExtraneous
 # spec:
 #   ignoreDifferences:
 #     - group: "*"
@@ -13,6 +15,16 @@
 #         - /status
 #     - group: "policy.open-cluster-management.io/v1"
 #       kind: "Policy"
+#       jsonPointers:
+#         - /spec
+#         - /metadata
+#     - group: "apps.open-cluster-management.io/v1"
+#       kind: "PlacementRule"
+#       jsonPointers:
+#         - /spec
+#         - /metadata
+#     - group: "policy.open-cluster-management.io/v1"
+#       kind: "PlacementBinding"
 #       jsonPointers:
 #         - /spec
 #         - /metadata
@@ -31,6 +43,6 @@
 #     automated:
 #       prune: false
 #       allowEmpty: true
-#       selfHeal: true # overrides changes made on the cluster that drift from git state
+#       selfHeal: false # overrides changes made on the cluster that drift from git state
 #     syncOptions:
 #       - CreateNamespace=true
