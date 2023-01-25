@@ -16,8 +16,13 @@ spec:
       jsonPointers:
         - /spec
         - /metadata
+    - group: "apps.open-cluster-management.io/v1"
+      kind: "PlacementRule"
+      jsonPointers:
+        - /spec
+        - /metadata
     - group: "policy.open-cluster-management.io/v1"
-      kind: "Policy"
+      kind: "PlacementBinding"
       jsonPointers:
         - /spec
         - /metadata
