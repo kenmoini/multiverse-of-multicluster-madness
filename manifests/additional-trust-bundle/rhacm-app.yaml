@@ -37,7 +37,7 @@ metadata:
   name: additional-trust-bundle-policygenerator
   namespace: rhacm-applications
 spec:
-  channel: rhacm-channels/additional-trust-bundle-policygenerator
+  channel: rhacm-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness
   placement:
     placementRef:
       kind: PlacementRule
