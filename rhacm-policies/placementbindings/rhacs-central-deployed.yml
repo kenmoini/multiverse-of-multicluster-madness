@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: rhacs-central-deployed-pb
+  namespace: rhacm-policies
+placementRef:
+  name: management-clusters
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: rhacs-central-deployed
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
