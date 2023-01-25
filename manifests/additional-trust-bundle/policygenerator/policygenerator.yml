@@ -2,7 +2,8 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
   name: additional-trust-bundle-policy-generator
-placementBindingDefaults: {}
+placementBindingDefaults:
+  name: additional-trust-bundle-policy-generator-pb
 policyDefaults:
   namespace: rhacm-policies
   # Use the name of an existing placement rule
