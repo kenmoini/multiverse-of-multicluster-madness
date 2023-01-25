@@ -72,7 +72,7 @@ spec:
                       containers:
                         - name: roxctl
                           image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
-                          command:
+                          args:
                             - -e "$ROX_CENTRAL_ADDRESS"
                             - --insecure-skip-tls-verify
                             - -p "$(cat /var/run/secrets/central-pw)"
