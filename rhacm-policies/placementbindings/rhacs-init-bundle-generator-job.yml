@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: rhacs-init-bundle-generator-job-pb
+  namespace: rhacm-policies
+placementRef:
+  name: all-openshift-clusters
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: rhacs-init-bundle-generator-job
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
