@@ -73,7 +73,10 @@ spec:
                         - name: roxctl
                           image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
                           command:
-                            - -e "$ROX_CENTRAL_ADDRESS" --insecure-skip-tls-verify -p "$(cat /var/run/secrets/central-pw)" central whoami
+                            - -e "$ROX_CENTRAL_ADDRESS"
+                            - --insecure-skip-tls-verify
+                            - -p "$(cat /var/run/secrets/central-pw)"
+                            - central whoami
                           env:
                             - name: ROX_CENTRAL_ADDRESS
                               value: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
