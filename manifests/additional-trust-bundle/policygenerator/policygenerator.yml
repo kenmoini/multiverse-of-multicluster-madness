@@ -2,17 +2,19 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
   name: additional-trust-bundle-policy-generator
-placementBindingDefaults:
-  name: all-openshift-clusters
+placementBindingDefaults: {}
 policyDefaults:
   namespace: rhacm-policies
-  #placement:
+  # Use the name of an existing placement rule
+  placement:
+    placementRuleName: all-openshift-clusters
   #  name: demo-placement-rule
   #  clusterSelectors:
   #    name: not-local-cluster
   remediationAction: inform
   severity: high
+  consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
 policies:
   - name: policy-additional-trust-bundles
     manifests:
-      - path: ../../manifests/additional-trust-bundle
+      - path: base

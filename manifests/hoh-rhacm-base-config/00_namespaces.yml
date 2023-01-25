@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacm-applications
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacm-policies
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhacm-channels
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"

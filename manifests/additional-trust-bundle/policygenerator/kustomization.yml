@@ -1,4 +1,4 @@
 generators:
   - policygenerator.yml
 commonLabels:
-  vendor: OpenShift
+  manifest-group: additional-trust-bundle
