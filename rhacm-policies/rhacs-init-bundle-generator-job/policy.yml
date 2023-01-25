@@ -43,7 +43,8 @@ spec:
                   name: central-htpasswd
                   namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
                 data:
-                  password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+                  #password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+                  password: '{{hub ( index ( lookup "v1"  "Secret" "stackrox" "central-httpasswod").data.password ) | base64dec hub}}'
           pruneObjectBehavior: DeleteIfCreated
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
