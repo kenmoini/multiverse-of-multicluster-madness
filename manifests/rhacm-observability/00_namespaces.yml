@@ -4,4 +4,5 @@ kind: Namespace
 metadata:
   name: open-cluster-management-observability
   annotations:
+    argocd.argoproj.io/sync-wave: "-1"
     scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'

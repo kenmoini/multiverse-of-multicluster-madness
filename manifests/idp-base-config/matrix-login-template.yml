@@ -3,6 +3,8 @@ apiVersion: v1
 metadata:
   name: matrix-login-template
   namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 stringData:
   login.html: |
     <!DOCTYPE html>
