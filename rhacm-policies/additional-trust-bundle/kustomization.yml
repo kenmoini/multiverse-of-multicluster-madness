@@ -1,0 +1,4 @@
+generators:
+  - policygenerator.yml
+commonLabels:
+  vendor: OpenShift
