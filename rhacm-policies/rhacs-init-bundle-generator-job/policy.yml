@@ -54,8 +54,8 @@ spec:
                           command:
                             - -e "$ROX_CENTRAL_ADDRESS" --insecure-skip-tls-verify -p "$(cat /var/run/secrets/central-pw)" central whoami
                           env:
-                            ROX_CENTRAL_ADDRESS: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
-                            #ROX_CENTRAL_ADMIN_PW: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+                            - ROX_CENTRAL_ADDRESS: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
+                            #- ROX_CENTRAL_ADMIN_PW: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
                           volumeMounts:
                           - name: central-pw
                             mountPath: "/var/run/secrets/central-pw"
