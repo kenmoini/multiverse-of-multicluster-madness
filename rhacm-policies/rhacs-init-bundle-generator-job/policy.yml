@@ -25,28 +25,28 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
-          pruneObjectBehavior: DeleteIfCreated
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: rhacs-central-admin-pw
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: v1
-                kind: Secret
-                metadata:
-                  name: central-htpasswd
-                  namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
-                data:
-                  #password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
-                  password: '{{hub ( index ( lookup "v1"  "Secret" "stackrox" "central-httpasswod").data.password ) | base64dec hub}}'
-          pruneObjectBehavior: DeleteIfCreated
+                  name: 'stackrox'
+          pruneObjectBehavior: None
+#    - objectDefinition:
+#        apiVersion: policy.open-cluster-management.io/v1
+#        kind: ConfigurationPolicy
+#        metadata:
+#          name: rhacs-central-admin-pw
+#        spec:
+#          remediationAction: enforce
+#          severity: high
+#          object-templates:
+#            - complianceType: musthave
+#              objectDefinition:
+#                apiVersion: v1
+#                kind: Secret
+#                metadata:
+#                  name: central-htpasswd
+#                  namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+#                data:
+#                  #password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+#                  password: '{{hub ( index ( lookup "v1"  "Secret" "stackrox" "central-httpasswod").data.password ) | base64dec hub}}'
+#          pruneObjectBehavior: DeleteIfCreated
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -62,7 +62,7 @@ spec:
                 kind: Job
                 metadata:
                   name: rhacs-init-bundle-generator-job
-                  namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                  namespace: 'stackrox'
                 spec:
                   selector: {}
                   template:
