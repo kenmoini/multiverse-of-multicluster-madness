@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: rhacs-securedcluster-deployed
+  name: rhacs-init-bundle-generator-job
   namespace: rhacm-policies
   annotations:
     policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
@@ -37,34 +37,33 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: platform.stackrox.io/v1alpha1
-                kind: SecuredCluster
+                apiVersion: batch/v1
+                kind: Job
                 metadata:
-                  name: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                  name: rhacs-init-bundle-generator-job
                   namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
                 spec:
-                  clusterName: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
-                  auditLogs:
-                    collection: Auto
-                  admissionControl:
-                    listenOnUpdates: true
-                    bypass: BreakGlassAnnotation
-                    contactImageScanners: DoNotScanInline
-                    listenOnCreates: true
-                    timeoutSeconds: 20
-                    listenOnEvents: true
-                  scanner:
-                    analyzer:
-                      scaling:
-                        autoScaling: Enabled
-                        maxReplicas: 3
-                        minReplicas: 1
-                        replicas: 1
-                    scannerComponent: AutoSense
-                  perNode:
-                    collector:
-                      collection: KernelModule
-                      imageFlavor: Slim
-                    taintToleration: TolerateTaints
-                  centralEndpoint: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
-          pruneObjectBehavior: DeleteIfCreated
+                  selector: {}
+                  template:
+                    metadata:
+                      name: roxctl
+                    spec:
+                      containers:
+                        - name: roxctl
+                          image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
+                          command:
+                            - -e "$ROX_CENTRAL_ADDRESS" --insecure-skip-tls-verify -p "$(cat /var/run/secrets/central-pw)" central whoami
+                          env:
+                            ROX_CENTRAL_ADDRESS: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
+                            #ROX_CENTRAL_ADMIN_PW: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+                          volumeMounts:
+                          - name: central-pw
+                            mountPath: "/var/run/secrets/central-pw"
+                            readOnly: true
+                      restartPolicy: Never
+                      volumes:
+                      - name: central-pw
+                        secret:
+                          secretName: central-htpasswd
+                          optional: false
+
