@@ -4,3 +4,4 @@ metadata:
   name: local-cluster
   labels:
     cluster.open-cluster-management.io/clusterset: hub-of-hubs
+    cluster-role: hub-of-hubs
