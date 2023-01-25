@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hoh-rhacm-base-config
+  namespace: openshift-gitops
+spec:
+  ignoreDifferences:
+    - group: "*"
+      kind: "*"
+      jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
+  destination:
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
+    targetRevision: HEAD
+    ## Path is the repo directory that containers the cluster(s) configuration and deployment manifests
+    path: manifests/hoh-rhacm-base-config
+    ## Enable recursive sub-directory search to enable management of multiple cluster from this single Application
+    directory:
+      recurse: true
+  project: hub-of-hubs-cluster-apps
+  syncPolicy:
+    automated:
+      #prune: false
+      allowEmpty: true
+      #selfHeal: false # overrides changes made on the cluster that drift from git state
