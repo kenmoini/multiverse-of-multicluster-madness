@@ -1,8 +1,23 @@
+---
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
   name: hub-of-hubs-clusters
   namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: cluster-role
+        operator: In
+        values:
+          - hub-of-hubs
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: hub-of-hubs-clusters
+  namespace: rhacm-applications
 spec:
   clusterSelector:
     matchExpressions:
