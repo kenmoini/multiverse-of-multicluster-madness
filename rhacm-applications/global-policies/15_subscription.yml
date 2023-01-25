@@ -8,7 +8,7 @@ metadata:
     apps.open-cluster-management.io/reconcile-option: merge
   labels:
     app: rhacm-policies
-  name: rhacm-policies-subscription-1
+  name: rhacm-policies
   namespace: rhacm-policies
 spec:
   channel: rhacm-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness

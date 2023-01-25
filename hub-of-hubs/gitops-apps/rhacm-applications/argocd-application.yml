@@ -16,6 +16,11 @@ spec:
       jsonPointers:
         - /spec
         - /metadata
+    - group: "policy.open-cluster-management.io/v1"
+      kind: "Policy"
+      jsonPointers:
+        - /spec
+        - /metadata
   destination:
     server: 'https://kubernetes.default.svc'
   source:

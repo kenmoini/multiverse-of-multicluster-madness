@@ -5,3 +5,11 @@ metadata:
 spec:
   clusterSelector:
     selectorType: LegacyClusterSetLabel
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: ManagedClusterSet
+metadata:
+  name: geo-hubs
+spec:
+  clusterSelector:
+    selectorType: LegacyClusterSetLabel
