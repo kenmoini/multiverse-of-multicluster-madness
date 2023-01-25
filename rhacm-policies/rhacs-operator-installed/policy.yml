@@ -7,8 +7,8 @@ metadata:
     policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/controls: 'CA-2 Security Assessments, CA-7 Continuous Monitoring'
-  labels:
-    app.kubernetes.io/instance: rhacm-policies
+  #labels:
+  #  app.kubernetes.io/instance: rhacm-policies
 spec:
   disabled: false
   policy-templates:
