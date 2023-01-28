@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: omg-shoes
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+    openshift.io/description: "A simple HTML application for shoe fans"
+    openshift.io/display-name: "OMG Shoes!"
+spec: {}

@@ -1,0 +1,21 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: omg-shoes
+  # namespace: omg-shoes
+  labels:
+    app: omg-shoes
+    app.kubernetes.io/part-of: omg-shoes
+    app.kubernetes.io/component: web-app
+    app.kubernetes.io/instance: omg-shoes
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: omg-shoes
+  type: ClusterIP
+  sessionAffinity: None

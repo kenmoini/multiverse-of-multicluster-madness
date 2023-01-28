@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omg-shoes
+  # namespace: omg-shoes
+  labels:
+    app: omg-shoes
+    app.kubernetes.io/part-of: omg-shoes
+    app.kubernetes.io/component: web-app
+    app.kubernetes.io/instance: omg-shoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omg-shoes
+  template:
+    metadata:
+      labels:
+        app: omg-shoes
+    spec:
+      containers:
+        - name: omg-shoes
+          image: quay.io/kenmoini/omg-shoes:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
