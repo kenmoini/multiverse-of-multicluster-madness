@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: infinite-mario
+  annotations:
+    openshift.io/description: "A randomly generating Super Mario Bros clone in a container!"
+    openshift.io/display-name: "Infinite Mario"
+spec: {}
