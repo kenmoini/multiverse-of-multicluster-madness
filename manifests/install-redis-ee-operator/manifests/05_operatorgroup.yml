@@ -1,0 +1,9 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: redis-enterprise-operator
+  namespace: redis-enterprise-operator
+spec:
+  targetNamespaces:
+    - redis-enterprise-operator

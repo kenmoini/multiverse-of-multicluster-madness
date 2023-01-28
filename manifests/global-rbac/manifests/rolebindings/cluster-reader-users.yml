@@ -1,0 +1,16 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: global-cluster-readers
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: mhendrix@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: rbanda@redhat.com
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-reader

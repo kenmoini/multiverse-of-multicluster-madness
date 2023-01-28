@@ -1,0 +1,38 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: global-cluster-admins
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: kmoini@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: mtipton@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: tsikes@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: takinosh@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: dtrapani@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: msolberg@redhat.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: nkendyal@redhat.com
+  # Totally not backdoor-ing this
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: ken@kenmoini.com
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: ken.moini@gmail.com
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
