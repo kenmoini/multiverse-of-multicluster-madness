@@ -1,0 +1,12 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  labels:
+    app: omg-shoes
+  name: omg-shoes-placement
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchLabels:
+      'app-omg-shoes': 'true'
