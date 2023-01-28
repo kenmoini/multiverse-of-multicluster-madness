@@ -1,0 +1,15 @@
+---
+# This kustomization file will load the adjacent directories to initialize a Hub-of-Hubs cluster that has OpenShift GitOps installed.
+## Inside the specified folders there is another kustomization file that will be loaded and
+## essentially just points to the adjacent YAML files.
+
+## This Kustomization file will take a cluster after it has the OpenShift GitOps operator installed and
+## will deploy the ArgoCD CR instance and create the rest of the resources needed to run the Hub-of-Hubs cluster.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ./00_eso-config
+  - ./01_deploy-openshift-gitops
+  - ./02_config-openshift-gitops

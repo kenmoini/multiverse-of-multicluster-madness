@@ -1,0 +1,14 @@
+---
+# This kustomization file will load the adjacent directories to initialize a bar Hub-of-Hubs cluster.
+## Inside the specified folders there is another kustomization file that will be loaded and
+## essentially just points to a few parent directories, over into the manifests folder, and into the target folder.
+
+## This Kustomization file is the entry point to where you install the software you need on your hub-of-hubs cluster.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ./install-external-secrets-operator
+  - ./install-hashicorp-vault-chart
+  - ./install-openshift-gitops-operator
