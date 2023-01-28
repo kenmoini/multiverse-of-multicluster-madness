@@ -1,4 +1,4 @@
-# ROSA Cluster Creation
+# Cheat Sheet - ROSA Cluster Creation
 
 To quickly create a Hub-of-Hub cluster via ROSA, run the following:
 
