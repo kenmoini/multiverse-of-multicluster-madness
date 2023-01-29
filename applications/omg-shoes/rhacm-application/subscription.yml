@@ -8,7 +8,7 @@ metadata:
     apps.open-cluster-management.io/reconcile-option: merge
   labels:
     app: omg-shoes
-  name: omg-shoes-subscription-1
+  name: omg-shoes-subscription
   namespace: rhacm-applications
 spec:
   channel: rhacm-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness
@@ -23,32 +23,3 @@ spec:
   #  hours:
   #    - start: "12:00AM"
   #      end: "11:30PM"
----
-apiVersion: app.k8s.io/v1beta1
-kind: Application
-metadata:
-  name: omg-shoes
-  namespace: rhacm-applications
-spec:
-  componentKinds:
-  - group: apps.open-cluster-management.io
-    kind: Subscription
-  descriptor: {}
-  selector:
-    matchExpressions:
-      - key: app
-        operator: In
-        values:
-          - omg-shoes
----
-apiVersion: apps.open-cluster-management.io/v1
-kind: PlacementRule
-metadata:
-  labels:
-    app: omg-shoes
-  name: omg-shoes-placement
-  namespace: rhacm-applications
-spec:
-  clusterSelector:
-    matchLabels:
-      'app-omg-shoes': 'true'
