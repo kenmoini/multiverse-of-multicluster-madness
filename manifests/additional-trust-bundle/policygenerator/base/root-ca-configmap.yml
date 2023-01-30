@@ -3,6 +3,8 @@ apiVersion: v1
 metadata:
   name: root-certificate-bundle
   namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 data:
   ca-bundle.crt: |
     -----BEGIN CERTIFICATE-----

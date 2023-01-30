@@ -2,6 +2,8 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
   name: additional-trust-bundle-pg
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 placementBindingDefaults:
   name: additional-trust-bundle-pg-pb
 policyDefaults:
