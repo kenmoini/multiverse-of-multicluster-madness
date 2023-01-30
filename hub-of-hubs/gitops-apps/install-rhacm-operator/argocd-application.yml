@@ -24,8 +24,8 @@ spec:
     ## Path is the repo directory that containers the cluster(s) configuration and deployment manifests
     path: manifests/install-rhacm-operator
     ## Enable recursive sub-directory search to enable management of multiple cluster from this single Application
-    directory:
-      recurse: true
+    #directory:
+    #  recurse: true
   project: hub-of-hubs-cluster-apps
   syncPolicy:
     automated:
