@@ -14,5 +14,5 @@ helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 
 # Create the Vault YAML
-helm template vault hashicorp/vault --namespace vault --values docs/examples/vault-helm-values.yml > hub-of-hubs/bootstrap/install-hashicorp-vault/10_mappedChart.yml
+helm template vault hashicorp/vault --namespace vault --values docs/examples/vault-helm-values.yml > manifests/install-hashicorp-vault-chart/10_mappedChart.yml
 ```

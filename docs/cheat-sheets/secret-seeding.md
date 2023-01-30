@@ -13,10 +13,52 @@ Assuming you'll be delivering this demonstration on a ROSA Hub-of-Hub cluster, a
 
 ## `vault-token-auth`
 
-Create the k8s/OCP Secret for the token used by the External Secrets Operator to authenticate to Vault.  Assuming you're using the default Vault deployment in dev mode then the token is `root`.
+Create the k8s/OCP Secret for the token used by the External Secrets Operator to authenticate to Vault.  If you're using the Vault deployment in dev mode then the token is `root`.
 
 ```bash
 oc create secret generic vault-token-auth --from-literal=token=root -n vault
+```
+
+If you are not using Vault in dev mode as is default, then you need to initialize the Vault first.
+
+```bash
+## Switch to the Project
+oc project vault
+
+## Initialize the Vault
+VAULT_INIT=$(oc exec -it vault-0 -- vault operator init -key-shares=1 -key-threshold=1)
+
+## Take note of the Vault Key and Root Token!
+echo "$VAULT_INIT" > .vault-init
+
+UNSEAL_KEY=$(cat .vault-init | grep "Unseal Key" | sed 's/Unseal Key 1: //')
+ROOT_TOKEN=$(cat .vault-init | grep "Initial Root Token" | sed 's/Initial Root Token: //')
+
+## Create the OpenShift Secret for the Vault Root Token
+oc create secret generic vault-token-auth --from-literal=token="${ROOT_TOKEN}" -n vault
+
+## Unseal with the Vault Key
+oc exec -it vault-0 -- vault operator unseal "$UNSEAL_KEY"
+
+## Log in to Vault with the Root Token
+oc exec -it vault-0 -- vault login "${ROOT_TOKEN}"
+
+## Enable key/value Secrets Engine
+oc exec -it vault-0 -- vault secrets enable -version=2 kv
+
+### [Optional] Enable Vault PKI Secrets Engine
+oc exec -it vault-0 -- vault secrets enable pki
+
+### [Optional] Configure a 10yr max lease time for PKI
+oc exec -it vault-0 -- vault secrets tune -max-lease-ttl=87600h pki
+
+## [Optional] Enable K8s authentication provider in Vault
+oc exec -it vault-0 -- vault auth enable kubernetes
+
+### [Optional] Configure the K8s Auth Integration
+oc exec -it vault-0 -- vault write auth/kubernetes/config kubernetes_host="https://\$KUBERNETES_PORT_443_TCP_ADDR:443" token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt issuer="https://kubernetes.default.svc.cluster.local"
+
+oc exec -it vault-0 -- vault write auth/kubernetes/role/issuer bound_service_account_names="*" bound_service_account_namespaces="*" ttl=20m
 ```
 
 ## `hoh-git-reader`
@@ -29,7 +71,7 @@ GIT_USERNAME="kenmoini" # Your GitHub username
 GIT_PASSWORD="$(cat ~/.mvomcm-gh-pat)" # Your GitHub PAT, store in a local file for easy reuse
 GIT_REPO="https://github.com/kenmoini/multiverse-of-multicluster-madness.git" # The URL to this repo/your fork
 
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-git-reader git_username="${GIT_USERNAME}" git_password="$GIT_PASSWORD" \
+oc rsh -n vault vault-0 vault kv put -mount=kv hoh-git-reader git_username="${GIT_USERNAME}" git_password="$GIT_PASSWORD" \
   git_url="$GIT_REPO" \
   git_branch=main \
   git_auth_method=basic \
@@ -48,7 +90,7 @@ GIT_USERNAME="user-1"
 GIT_PASSWORD="openshift"
 GIT_REPO="https://gitea-gitea.apps.MCM-GEO-HUB.EXAMPLE.COM/user-1/openshift-ztp.git"
 
-oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-git-credentials git_username="${GIT_USERNAME}" git_password="$GIT_PASSWORD" \
+oc rsh -n vault vault-0 vault kv put -mount=kv geo-ztp-git-credentials git_username="${GIT_USERNAME}" git_password="$GIT_PASSWORD" \
   git_url="$GIT_REPO" \
   git_branch=main \
   git_auth_method=basic \
@@ -66,7 +108,7 @@ VCENTER_USERNAME="administrator@vsphere.lab.kemo.network"
 VCENTER_PASSWORD="$(cat ~/.vcenter-admin-pwd)"
 VCENTER_FQDN="vcenter.lab.kemo.network"
 
-oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-vsphere-credentials \
+oc rsh -n vault vault-0 vault kv put -mount=kv geo-ztp-vsphere-credentials \
  vcenter_username="${VCENTER_USERNAME}" \
  vcenter_password="$VCENTER_PASSWORD" \
  vcenter_fqdn="$VCENTER_FQDN" \
@@ -78,9 +120,9 @@ oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-vsphere-credentials \
 Create the Geo-local Image Pull credentials to ZTP to vSphere clusters.  This could change depending on if you have a disconnected/private registry available for container images instead of pulling them from the internet.
 
 ```bash
-oc rsh -n vault vault-0 vault kv put -mount=secret pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
-oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-image-pull-credentials dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
+oc rsh -n vault vault-0 vault kv put -mount=kv pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
+oc rsh -n vault vault-0 vault kv put -mount=kv hoh-pull-secret dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
+oc rsh -n vault vault-0 vault kv put -mount=kv geo-ztp-image-pull-credentials dockerconfigjson=$(cat ~/.docker/config.json | jq -rMc)
 ```
 
 ## `geo-ztp-ssh-keypair`
@@ -91,7 +133,7 @@ Create the Geo-local SSH Key Pair to ZTP to vSphere clusters.
 # Create a new SSH key pair
 ssh-keygen -t rsa -b 4096 -f ~/.ssh/mvomcm-geo-hub-ztp -C "mvomcm-geo-hub-ztp" -N ""
 
-oc rsh -n vault vault-0 vault kv put -mount=secret geo-ztp-ssh-keypair private_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp)" public_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp.pub)"
+oc rsh -n vault vault-0 vault kv put -mount=kv geo-ztp-ssh-keypair private_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp)" public_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp.pub)"
 ```
 
 ## Additional Credentials
@@ -103,11 +145,11 @@ Some times for different adaptations of this demo environment you may have thing
 aws_access_key=$(awk -F "=" '/aws_access_key_id/ {print $2}' ~/.aws/credentials | tr -d " ")
 aws_secret_key=$(awk -F "=" '/aws_secret_access_key/ {print $2}' ~/.aws/credentials | tr -d " ")
 
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-aws-creds aws_access_key_id=$aws_access_key aws_secret_access_key=$aws_secret_key
+oc rsh -n vault vault-0 vault kv put -mount=kv hoh-aws-creds aws_access_key_id=$aws_access_key aws_secret_access_key=$aws_secret_key
 
 ## Azure creds example
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-azure-creds azure_client_id=REDACTED azure_client_secret=REDACTED azure_tenant_id=REDACTED azure_subscription_id=REDACTED
+oc rsh -n vault vault-0 vault kv put -mount=kv hoh-azure-creds azure_client_id=REDACTED azure_client_secret=REDACTED azure_tenant_id=REDACTED azure_subscription_id=REDACTED
 
 ## GCP creds example
-oc rsh -n vault vault-0 vault kv put -mount=secret hoh-gcp-creds gcp_service_account="$(cat ~/.gcp/creds.json)"
+oc rsh -n vault vault-0 vault kv put -mount=kv hoh-gcp-creds gcp_service_account="$(cat ~/.gcp/creds.json)"
 ```

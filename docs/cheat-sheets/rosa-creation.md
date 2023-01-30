@@ -55,3 +55,16 @@ rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="kmoi
 rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="mtipton@redhat.com"
 rosa grant user cluster-admin --cluster=hoh-rosa --region=us-east-2 --user="tsikes@redhat.com"
 ```
+
+## Deleting the Cluster
+
+```bash
+## Delete the cluster
+rosa delete cluster --cluster=hoh-rosa --watch
+
+## Delete the OIDC provider and roles with the bits it gives ya
+CLUSTER_ID="ID_HERE"
+
+rosa delete oidc-provider -c $CLUSTER_ID
+rosa delete operator-roles -c $CLUSTER_ID
+```

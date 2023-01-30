@@ -129,3 +129,4 @@ spec:
       - effect: NoExecute
         key: node-role.kubernetes.io/infra
         operator: Exists
+  kustomizeBuildOptions: '--enable-helm'

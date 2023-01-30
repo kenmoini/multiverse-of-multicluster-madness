@@ -43,6 +43,51 @@ metadata:
     app.kubernetes.io/instance: vault
     app.kubernetes.io/managed-by: Helm
 ---
+# Source: vault/templates/server-config-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+  namespace: vault
+  labels:
+    helm.sh/chart: vault-0.23.0
+    app.kubernetes.io/name: vault
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+data:
+  extraconfig-from-values.hcl: |-
+    disable_mlock = true
+    ui = true
+    
+    listener "tcp" {
+      tls_disable = 1
+      address = "[::]:8200"
+      cluster_address = "[::]:8201"
+      # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+      #telemetry {
+      #  unauthenticated_metrics_access = "true"
+      #}
+    }
+    storage "file" {
+      path = "/vault/data"
+    }
+    
+    # Example configuration for using auto-unseal, using Google Cloud KMS. The
+    # GKMS keys must already exist, and the cluster must have a service account
+    # that is authorized to access GCP KMS.
+    #seal "gcpckms" {
+    #   project     = "vault-helm-dev"
+    #   region      = "global"
+    #   key_ring    = "vault-helm-unseal-kr"
+    #   crypto_key  = "vault-helm-unseal-key"
+    #}
+    
+    # Example configuration for enabling Prometheus metrics in your config.
+    #telemetry {
+    #  prometheus_retention_time = "30s",
+    #  disable_hostname = true
+    #}
+---
 # Source: vault/templates/injector-clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -248,7 +293,7 @@ spec:
       containers:
         - name: sidecar-injector
           
-          image: "hashicorp/vault-k8s:1.1.0"
+          image: "registry.connect.redhat.com/hashicorp/vault-k8s:1.1.0-ubi"
           imagePullPolicy: "IfNotPresent"
           env:
             - name: AGENT_INJECT_LISTEN
@@ -260,7 +305,7 @@ spec:
             - name: AGENT_INJECT_VAULT_AUTH_PATH
               value: auth/kubernetes
             - name: AGENT_INJECT_VAULT_IMAGE
-              value: "hashicorp/vault:1.12.1"
+              value: "registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi"
             - name: AGENT_INJECT_TLS_AUTO
               value: vault-agent-injector-cfg
             - name: AGENT_INJECT_TLS_AUTO_HOSTS
@@ -343,6 +388,16 @@ spec:
         component: server
     spec:
       
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: vault
+                  app.kubernetes.io/instance: "vault"
+                  component: server
+              topologyKey: kubernetes.io/hostname
+  
       
       
       
@@ -351,20 +406,31 @@ spec:
       
       volumes:
         
+        - name: config
+          configMap:
+            name: vault-config
+  
         - name: home
           emptyDir: {}
       containers:
         - name: vault
           
-          image: hashicorp/vault:1.12.1
+          image: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
           imagePullPolicy: IfNotPresent
           command:
           - "/bin/sh"
           - "-ec"
           args: 
           - |
-            /usr/local/bin/docker-entrypoint.sh vault server -dev 
-  
+            cp /vault/config/extraconfig-from-values.hcl /tmp/storageconfig.hcl;
+            [ -n "${HOST_IP}" ] && sed -Ei "s|HOST_IP|${HOST_IP?}|g" /tmp/storageconfig.hcl;
+            [ -n "${POD_IP}" ] && sed -Ei "s|POD_IP|${POD_IP?}|g" /tmp/storageconfig.hcl;
+            [ -n "${HOSTNAME}" ] && sed -Ei "s|HOSTNAME|${HOSTNAME?}|g" /tmp/storageconfig.hcl;
+            [ -n "${API_ADDR}" ] && sed -Ei "s|API_ADDR|${API_ADDR?}|g" /tmp/storageconfig.hcl;
+            [ -n "${TRANSIT_ADDR}" ] && sed -Ei "s|TRANSIT_ADDR|${TRANSIT_ADDR?}|g" /tmp/storageconfig.hcl;
+            [ -n "${RAFT_ADDR}" ] && sed -Ei "s|RAFT_ADDR|${RAFT_ADDR?}|g" /tmp/storageconfig.hcl;
+            /usr/local/bin/docker-entrypoint.sh vault server -config=/tmp/storageconfig.hcl 
+   
           env:
             - name: HOST_IP
               valueFrom:
@@ -399,16 +465,19 @@ spec:
             - name: HOME
               value: "/home/vault"
             
-            - name: VAULT_DEV_ROOT_TOKEN_ID
-              value: root
-            - name: VAULT_DEV_LISTEN_ADDRESS
-              value: "[::]:8200"
-  
             
             
           volumeMounts:
           
   
+    
+            - name: data
+              mountPath: /vault/data
+    
+  
+  
+            - name: config
+              mountPath: /vault/config
   
             - name: home
               mountPath: /home/vault
@@ -446,6 +515,18 @@ spec:
                   # to this pod while it's terminating
                   "sleep 5 && kill -SIGTERM $(pidof vault)",
                 ]
+      
+  
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
 ---
 # Source: vault/templates/injector-mutating-webhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -515,7 +596,7 @@ spec:
   
   containers:
     - name: vault-server-test
-      image: hashicorp/vault:1.12.1
+      image: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
       imagePullPolicy: IfNotPresent
       env:
         - name: VAULT_ADDR
