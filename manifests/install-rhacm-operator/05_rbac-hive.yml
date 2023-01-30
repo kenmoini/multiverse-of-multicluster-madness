@@ -2,6 +2,8 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
   name: hive-cluster-admin
 subjects:
   - kind: ServiceAccount
