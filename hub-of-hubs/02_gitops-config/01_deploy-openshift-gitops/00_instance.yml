@@ -130,3 +130,6 @@ spec:
         key: node-role.kubernetes.io/infra
         operator: Exists
   kustomizeBuildOptions: '--enable-helm'
+  kustomizeVersions:
+    - path: /usr/local/bin/kustomize
+      version: v4.4.1
