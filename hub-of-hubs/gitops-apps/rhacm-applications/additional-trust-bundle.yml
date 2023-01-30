@@ -40,9 +40,9 @@ spec:
     #  recurse: false
   project: hub-of-hubs-cluster-apps
   syncPolicy:
-    #automated:
+    automated:
     #  prune: false
-    #  allowEmpty: true
-    #  selfHeal: false # overrides changes made on the cluster that drift from git state
+      allowEmpty: true
+      selfHeal: false # overrides changes made on the cluster that drift from git state
     syncOptions:
       - CreateNamespace=true
