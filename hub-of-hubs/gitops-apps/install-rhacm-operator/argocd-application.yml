@@ -30,4 +30,4 @@ spec:
     automated:
       prune: true
       allowEmpty: true
-      selfHeal: true # overrides changes made on the cluster that drift from git state
+      selfHeal: false # overrides changes made on the cluster that drift from git state
