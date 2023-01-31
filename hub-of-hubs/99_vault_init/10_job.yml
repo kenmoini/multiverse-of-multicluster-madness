@@ -5,40 +5,77 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: vault-server-test
+        image: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        env:
+          - name: VAULT_ADDR
+            value: http://vault.vault.svc:8200
+          
+        command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Checking for sealed info in 'vault status' output"
+            ATTEMPTS=60
+            n=0
+            until [ "$n" -ge $ATTEMPTS ]
+            do
+              echo "Attempt" $n...
+              vault status -format yaml | grep -E '^sealed: (true|false)' && break
+              n=$((n+1))
+              sleep 5
+            done
+            if [ $n -ge $ATTEMPTS ]; then
+              echo "timed out looking for sealed info in 'vault status' output"
+              exit 1
+            fi
+
+            exit 0
       containers:
       - name: vault-init
         image: registry.redhat.io/openshift4/ose-cli:v4.6
         imagePullPolicy: IfNotPresent
-        #env:
-        #- name: "http_proxy"
-        #  value: "http://userid:password@proxy.xyzco.com:8080"
-        #- name: "https_proxy"
-        #  value: "http://uesrid:password@proxy.xyzco.com:8080"
-        #- name: "no_proxy"
-        #  value: ".xyzco.com,172.30.0.0/16,.svc,.svc.cluster.local,.local,10.0.0.0/8,100.64.0.0/10"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
         command:
         - /bin/sh
         - -c
         - >-
-          VAULT_STATUS=$(oc exec -it vault-0 -- vault operator -status)
-          if [ "$VAULT_STATUS" -eq "2" ]; then
-            echo "Vault is already initialized"
-            exit 0
-          fi
-          
-          VAULT_INIT=$(oc exec -it vault-0 -- vault operator init -key-shares=1 -key-threshold=1)
-          echo "$VAULT_INIT" > .vault-init
-          cat .vault-init
-          UNSEAL_KEY=$(cat .vault-init | grep "Unseal Key" | sed 's/Unseal Key 1: //')
-          ROOT_TOKEN=$(cat .vault-init | grep "Initial Root Token" | sed 's/Initial Root Token: //')
-          oc create secret generic vault-token-auth --from-literal=token="${ROOT_TOKEN}" -n vault
-          oc exec -it vault-0 -- vault operator unseal "$UNSEAL_KEY"
-          oc exec -it vault-0 -- vault login "${ROOT_TOKEN}"
-          oc exec -it vault-0 -- vault secrets enable -version=2 kv
-          oc exec -it vault-0 -- vault secrets enable pki
-          oc exec -it vault-0 -- vault secrets tune -max-lease-ttl=87600h pki
-          oc exec -it vault-0 -- vault auth enable kubernetes
-          oc exec -it vault-0 -- vault write auth/kubernetes/config kubernetes_host="https://\$KUBERNETES_PORT_443_TCP_ADDR:443" token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt issuer="https://kubernetes.default.svc.cluster.local"
-          oc exec -it vault-0 -- vault write auth/kubernetes/role/issuer bound_service_account_names="*" bound_service_account_namespaces="*" ttl=20m
+          VAULT_STATUS=$(oc exec vault-0 -- vault operator init -status);
+          if [[ "$VAULT_STATUS" == "Vault is initialized" ]]; then
+            echo "Vault is already initialized";
+            exit 0;
+          fi;
+          VAULT_INIT=$(oc exec -it vault-0 -- vault operator init -key-shares=1 -key-threshold=1);
+          echo "$VAULT_INIT" > /tmp/.vault-init;
+          cat /tmp/.vault-init;
+          UNSEAL_KEY=$(cat /tmp/.vault-init | grep "Unseal Key" | sed 's/Unseal Key 1: //');
+          ROOT_TOKEN=$(cat /tmp/.vault-init | grep "Initial Root Token" | sed 's/Initial Root Token: //');
+          oc create secret generic vault-token-auth --from-literal=token="${ROOT_TOKEN}" -n vault;
+          oc create secret generic vault-unseal-key --from-literal=unsealKey="${UNSEAL_KEY}" -n vault;
+          oc exec vault-0 -- vault operator unseal "$UNSEAL_KEY";
+          oc exec vault-0 -- vault login "${ROOT_TOKEN}";
+          oc exec vault-0 -- vault secrets enable -version=2 kv;
+          oc exec vault-0 -- vault secrets enable pki;
+          oc exec vault-0 -- vault secrets tune -max-lease-ttl=87600h pki;
+          oc exec vault-0 -- vault auth enable kubernetes;
+          oc exec vault-0 -- vault write auth/kubernetes/config kubernetes_host="https://\$KUBERNETES_PORT_443_TCP_ADDR:443" token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt issuer="https://kubernetes.default.svc.cluster.local";
+          oc exec vault-0 -- vault write auth/kubernetes/role/issuer bound_service_account_names="*" bound_service_account_namespaces="*" ttl=20m;
       restartPolicy: OnFailure
       serviceAccountName: vault-init-sa

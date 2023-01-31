@@ -71,13 +71,14 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
 Most mutli-cluster architectures operate in a "Hub and Spoke" model, and can be extended even further by operating a "Hub of Hubs" pattern.  In an OpenShift context, there are many ways to bootstrap a Hub or Hub of Hub cluster, and arguably the method with the lowest level of effort and maintenance would be to use the OpenShift GitOps Operator (ArgoCD) to bootstrap things.  So then all you have to do is:
 
 1. Start with a fresh OpenShift cluster
-2. `oc apply -k hub-of-hubs/01_bootstrap/`
-3. *Do some Secrets seeding stuff...*
-4. `oc apply -k hub-of-hubs/02_gitops-config/`
-5. ??????
-6. PROFIT!!!!!1
+2. Install the needed Operators: `oc apply -k hub-of-hubs/01_bootstrap/`
+3. [Optional] Initialize the Vault `oc apply -k hub-of-hubs/99_vault_init`
+4. *[Do some Secrets seeding stuff...](docs/cheat-sheets/secret-seeding.md)*
+5. Configure the OpenShift GitOps instance to bootstrap the rest of the process: `oc apply -k hub-of-hubs/02_gitops-config/`
+6. ??????
+7. PROFIT!!!!!1
 
-From there, ArgoCD will sync things to that repo in order to install Red Hat Advanced Cluster Management and a Basic MultiClusterHub.  You could add additional things to the `hub-of-hubs/bootstrap/` directory to install other things, however from here forward this repository will leverage RHACM to manage the clusters via Policies.
+From there, ArgoCD will sync things to that repo in order to install Red Hat Advanced Cluster Management and a Basic MultiClusterHub.  You could add additional things to the `hub-of-hubs/01_bootstrap/` directory to install other things, however from here forward this repository will leverage RHACM to manage the clusters via Policies.
 
 ### Secret Seeding
 

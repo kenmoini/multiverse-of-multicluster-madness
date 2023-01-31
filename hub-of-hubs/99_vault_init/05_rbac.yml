@@ -30,3 +30,14 @@ rules:
       - ''
     resources:
       - secrets
+      - pods
+  - verbs:
+      - get
+      - create
+      - list
+      - exec
+    apiGroups:
+      - ''
+    resources:
+      - pods
+      - pods/exec
