@@ -33,4 +33,4 @@ spec:
   placement:
     placementRef:
       kind: PlacementRule
-      name: hub-of-hub-clusters
+      name: hub-of-hubs-clusters
