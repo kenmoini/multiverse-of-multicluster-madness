@@ -34,7 +34,7 @@ metadata:
   annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
     apps.open-cluster-management.io/git-branch: main
-    apps.open-cluster-management.io/git-path: manifests/additional-trust-bundle
+    apps.open-cluster-management.io/git-path: manifests/additional-trust-bundle/policygenerator
     apps.open-cluster-management.io/reconcile-option: merge
   labels:
     app: additional-trust-bundle-policygenerator
