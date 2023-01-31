@@ -1,0 +1,157 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: aws-infra-nodes
+  namespace: rhacm-policies
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: ocp-infra-machine-pool-a
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: machine.openshift.io/v1beta1
+                kind: MachineSet
+                metadata:
+                  annotations:
+                    machine.openshift.io/GPU: '0'
+                    machine.openshift.io/memoryMb: '131072'
+                    machine.openshift.io/vCPU: '32'
+                  name: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-infra-{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}a'
+                  namespace: openshift-machine-api
+                  labels:
+                    machine.openshift.io/cluster-api-cluster: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                spec:
+                  replicas: 1
+                  selector:
+                    matchLabels:
+                      machine.openshift.io/cluster-api-cluster: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                      machine.openshift.io/cluster-api-machineset: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-worker-{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}a'
+                  template:
+                    metadata:
+                      labels:
+                        machine.openshift.io/cluster-api-cluster: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                        machine.openshift.io/cluster-api-machine-role: infra
+                        machine.openshift.io/cluster-api-machine-type: infra
+                        machine.openshift.io/cluster-api-machineset: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-worker-{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}a'
+                    spec:
+                      lifecycleHooks: {}
+                      metadata: {}
+                      providerSpec:
+                        value:
+                          userDataSecret:
+                            name: worker-user-data
+                          placement:
+                            availabilityZone: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}a'
+                            region: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}'
+                          credentialsSecret:
+                            name: aws-cloud-credentials
+                          instanceType: m5.8xlarge
+                          metadata:
+                            creationTimestamp: null
+                          blockDevices:
+                            - ebs:
+                                encrypted: true
+                                iops: 0
+                                kmsKey:
+                                  arn: ''
+                                volumeSize: 120
+                                volumeType: gp3
+                          securityGroups:
+                            - filters:
+                                - name: 'tag:Name'
+                                  values:
+                                    - '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-worker-sg'
+                          kind: AWSMachineProviderConfig
+                          metadataServiceOptions: {}
+                          tags:
+                            - name: 'kubernetes.io/cluster/{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+                              value: owned
+                          deviceIndex: 0
+                          ami:
+                            id: ami-0ff64f495c7e977cf
+                          subnet:
+                            filters:
+                              - name: 'tag:Name'
+                                values:
+                                  - '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-private-{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.platformStatus.aws.region ) }}a'
+                          apiVersion: machine.openshift.io/v1beta1
+                          iamInstanceProfile:
+                            id: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}-worker-profile'
+          pruneObjectBehavior: None
+#    - objectDefinition:
+#        apiVersion: policy.open-cluster-management.io/v1
+#        kind: ConfigurationPolicy
+#        metadata:
+#          name: rhacs-central-admin-pw
+#        spec:
+#          remediationAction: enforce
+#          severity: high
+#          object-templates:
+#            - complianceType: musthave
+#              objectDefinition:
+#                apiVersion: v1
+#                kind: Secret
+#                metadata:
+#                  name: central-htpasswd
+#                  namespace: '{{ ( index ( lookup "config.openshift.io/v1"  "Infrastructure" "" "cluster").status.infrastructureName ) }}'
+#                data:
+#                  #password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+#                  password: '{{hub ( index ( lookup "v1"  "Secret" "stackrox" "central-httpasswod").data.password ) | base64dec hub}}'
+#          pruneObjectBehavior: DeleteIfCreated
+#    - objectDefinition:
+#        apiVersion: policy.open-cluster-management.io/v1
+#        kind: ConfigurationPolicy
+#        metadata:
+#          name: rhacs-clusterinit-job
+#        spec:
+#          remediationAction: enforce
+#          severity: high
+#          object-templates:
+#            - complianceType: musthave
+#              objectDefinition:
+#                apiVersion: batch/v1
+#                kind: Job
+#                metadata:
+#                  name: rhacs-init-bundle-generator-job
+#                  namespace: 'stackrox'
+#                spec:
+#                  selector: {}
+#                  template:
+#                    metadata:
+#                      name: roxctl
+#                    spec:
+#                      containers:
+#                        - name: roxctl
+#                          image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
+#                          command:
+#                            - /usr/bin/roxctl
+#                            - -e "$ROX_CENTRAL_ADDRESS"
+#                            - --insecure-skip-tls-verify
+#                            - -p "$(cat /var/run/secrets/central-pw)"
+#                            - central whoami
+#                          env:
+#                            - name: ROX_CENTRAL_ADDRESS
+#                              value: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
+#                            #- name: ROX_CENTRAL_ADMIN_PW
+#                            #  value: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+#                          volumeMounts:
+#                          - name: central-pw
+#                            mountPath: "/var/run/secrets/central-pw"
+#                            readOnly: true
+#                      restartPolicy: Never
+#                      volumes:
+#                      - name: central-pw
+#                        secret:
+#                          secretName: central-htpasswd
+#                          optional: false
+#
