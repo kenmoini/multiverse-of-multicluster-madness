@@ -2,7 +2,7 @@ generators:
   - policygenerator.yml
 
 commonLabels:
-  manifest-group: additional-trust-bundle
+  manifest-group: placement-inheritance
 
 commonAnnotations:
   argocd.argoproj.io/compare-options: IgnoreExtraneous

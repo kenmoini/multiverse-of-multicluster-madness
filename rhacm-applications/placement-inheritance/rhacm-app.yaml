@@ -34,7 +34,7 @@ metadata:
   annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
     apps.open-cluster-management.io/git-branch: main
-    apps.open-cluster-management.io/git-path: rhacm-policies/placement-inheritance
+    apps.open-cluster-management.io/git-path: rhacm-policy-generators/placement-inheritance
     apps.open-cluster-management.io/reconcile-option: merge
   labels:
     app: policy-inheritance-policygenerator
