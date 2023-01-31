@@ -23,9 +23,9 @@ spec:
   project: hub-of-hubs-cluster-apps
   syncPolicy:
     automated:
-      #prune: false
+      prune: true
       allowEmpty: true
-      #selfHeal: false # overrides changes made on the cluster that drift from git state
+      #selfHeal: true # overrides changes made on the cluster that drift from git state
     syncOptions:
     - ServerSideApply=true
     - Validate=false
