@@ -173,7 +173,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: ocp-infra-machine-pool-b
+          name: ocp-infra-machine-pool-c
         spec:
           remediationAction: enforce
           severity: high
