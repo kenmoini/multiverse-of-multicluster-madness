@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-secret-updater
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vault-secret-updater
+subjects:
+- kind: ServiceAccount
+  name: vault-init-sa
+  namespace: vault
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: vault-secret-updater
+rules:
+  - verbs:
+      - get
+      - list
+      - delete
+      - update
+      - create
+      - patch
+    apiGroups:
+      - ''
+    resources:
+      - secrets
