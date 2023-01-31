@@ -26,3 +26,6 @@ spec:
       #prune: false
       allowEmpty: true
       #selfHeal: false # overrides changes made on the cluster that drift from git state
+    syncOptions:
+    - ServerSideApply=true
+    - Validate=false
