@@ -1,8 +1,6 @@
 generators:
   - policygenerator.yml
-
 commonLabels:
   manifest-group: rhacm-installed
-
 commonAnnotations:
   argocd.argoproj.io/compare-options: IgnoreExtraneous
