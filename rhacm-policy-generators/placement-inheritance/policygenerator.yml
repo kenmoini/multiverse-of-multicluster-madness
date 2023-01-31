@@ -19,4 +19,4 @@ policyDefaults:
 policies:
   - name: placement-rules
     manifests:
-      - path: ../../rhacm-policies/placementrules
+      - path: placementrules
