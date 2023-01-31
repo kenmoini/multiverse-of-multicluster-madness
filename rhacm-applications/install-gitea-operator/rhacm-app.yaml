@@ -29,7 +29,7 @@ metadata:
   name: install-gitea-operator-policygenerator
   namespace: rhacm-applications
 spec:
-  channel: gitea-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness
+  channel: rhacm-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness
   placement:
     placementRef:
       kind: PlacementRule
