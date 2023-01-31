@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhacm-applications-placement-inheritance
+  namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  ignoreDifferences:
+    - group: "*"
+      kind: "*"
+      jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
+        - /status
+    - group: "policy.open-cluster-management.io/v1"
+      kind: "Policy"
+      jsonPointers:
+        - /spec
+        - /metadata
+    - group: "apps.open-cluster-management.io/v1"
+      kind: "PlacementRule"
+      jsonPointers:
+        - /spec
+        - /metadata
+    - group: "policy.open-cluster-management.io/v1"
+      kind: "PlacementBinding"
+      jsonPointers:
+        - /spec
+        - /metadata
+  destination:
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
+    targetRevision: HEAD
+    ## Path is the repo directory that containers the cluster(s) configuration and deployment manifests
+    path: rhacm-policies/placement-inheritance
+    ## Enable recursive sub-directory search to enable management of multiple cluster from this single Application
+    #directory:
+    #  recurse: false
+  project: hub-of-hubs-cluster-apps
+  syncPolicy:
+    automated:
+    #  prune: false
+      allowEmpty: true
+      # selfHeal: false # overrides changes made on the cluster that drift from git state
+    syncOptions:
+      - CreateNamespace=true
