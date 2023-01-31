@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: aws-infra-nodes-pb
+  namespace: rhacm-policies
+placementRef:
+  name: aws-openshift-clusters
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: aws-infra-nodes
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
