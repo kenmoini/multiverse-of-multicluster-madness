@@ -22,6 +22,11 @@ oc create secret generic vault-token-auth --from-literal=token=root -n vault
 If you are not using Vault in dev mode as is default, then you need to initialize the Vault first.
 
 ```bash
+## The hub-of-hubs/99_vault_init manifests take care of all the following steps
+oc apply -k hub-of-hubs/99_vault_init/
+
+## ORRRRR...
+
 ## Switch to the Project
 oc project vault
 
