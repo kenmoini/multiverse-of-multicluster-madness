@@ -47,50 +47,50 @@ spec:
 #                  #password: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
 #                  password: '{{hub ( index ( lookup "v1"  "Secret" "stackrox" "central-httpasswod").data.password ) | base64dec hub}}'
 #          pruneObjectBehavior: DeleteIfCreated
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: rhacs-clusterinit-job
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: batch/v1
-                kind: Job
-                metadata:
-                  name: rhacs-init-bundle-generator-job
-                  namespace: 'stackrox'
-                spec:
-                  selector: {}
-                  template:
-                    metadata:
-                      name: roxctl
-                    spec:
-                      containers:
-                        - name: roxctl
-                          image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
-                          command:
-                            - /usr/bin/roxctl
-                            - -e "$ROX_CENTRAL_ADDRESS"
-                            - --insecure-skip-tls-verify
-                            - -p "$(cat /var/run/secrets/central-pw)"
-                            - central whoami
-                          env:
-                            - name: ROX_CENTRAL_ADDRESS
-                              value: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
-                            #- name: ROX_CENTRAL_ADMIN_PW
-                            #  value: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
-                          volumeMounts:
-                          - name: central-pw
-                            mountPath: "/var/run/secrets/central-pw"
-                            readOnly: true
-                      restartPolicy: Never
-                      volumes:
-                      - name: central-pw
-                        secret:
-                          secretName: central-htpasswd
-                          optional: false
-
+#    - objectDefinition:
+#        apiVersion: policy.open-cluster-management.io/v1
+#        kind: ConfigurationPolicy
+#        metadata:
+#          name: rhacs-clusterinit-job
+#        spec:
+#          remediationAction: enforce
+#          severity: high
+#          object-templates:
+#            - complianceType: musthave
+#              objectDefinition:
+#                apiVersion: batch/v1
+#                kind: Job
+#                metadata:
+#                  name: rhacs-init-bundle-generator-job
+#                  namespace: 'stackrox'
+#                spec:
+#                  selector: {}
+#                  template:
+#                    metadata:
+#                      name: roxctl
+#                    spec:
+#                      containers:
+#                        - name: roxctl
+#                          image: registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:3.73.1
+#                          command:
+#                            - /usr/bin/roxctl
+#                            - -e "$ROX_CENTRAL_ADDRESS"
+#                            - --insecure-skip-tls-verify
+#                            - -p "$(cat /var/run/secrets/central-pw)"
+#                            - central whoami
+#                          env:
+#                            - name: ROX_CENTRAL_ADDRESS
+#                              value: 'central-stackrox.{{hub ( index ( lookup "config.openshift.io/v1"  "Ingress" "" "cluster").spec.domain ) hub}}:443'
+#                            #- name: ROX_CENTRAL_ADMIN_PW
+#                            #  value: '{{hub fromSecret "stackrox" "central-htpasswd" "password" hub}}'
+#                          volumeMounts:
+#                          - name: central-pw
+#                            mountPath: "/var/run/secrets/central-pw"
+#                            readOnly: true
+#                      restartPolicy: Never
+#                      volumes:
+#                      - name: central-pw
+#                        secret:
+#                          secretName: central-htpasswd
+#                          optional: false
+#
