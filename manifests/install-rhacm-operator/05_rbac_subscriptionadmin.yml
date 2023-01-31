@@ -15,7 +15,65 @@ subjects:
   - kind: ServiceAccount
     name: iam-policy-controller-sa
     namespace: open-cluster-management-agent-addon
+  - kind: ServiceAccount
+    name: cert-policy-controller-sa
+    namespace: open-cluster-management-agent-addon
+  - kind: ServiceAccount
+    name: cluster-proxy
+    namespace: open-cluster-management-agent-addon
+  - kind: ServiceAccount
+    name: config-policy-controller-sa
+    namespace: open-cluster-management-agent-addon
+  - kind: ServiceAccount
+    name: klusterlet-addon-workmgr
+    namespace: open-cluster-management-agent-addon
+
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: openshift-gitops
+  - kind: ServiceAccount
+    name: openshift-gitops-applicationset-controller
+    namespace: openshift-gitops
+
+  - kind: ServiceAccount
+    name: default
+    namespace: openshift-gitops
+  - kind: ServiceAccount
+    name: gitops-service-cluster
+    namespace: openshift-gitops
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-dex-server
+    namespace: openshift-gitops
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-server
+    namespace: openshift-gitops
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: cluster-admin
+  name: open-cluster-management:subscription-admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: open-cluster-management:subscription-admin
+rules:
+- apiGroups:
+  - app.k8s.io
+  resources:
+  - applications
+  verbs:
+  - '*'
+- apiGroups:
+  - apps.open-cluster-management.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - namespaces
+  verbs:
+  - '*'
