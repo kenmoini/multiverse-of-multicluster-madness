@@ -45,4 +45,4 @@ spec:
   placement:
     placementRef:
       kind: PlacementRule
-      name: management-clusters
+      name: geo-hub-clusters
