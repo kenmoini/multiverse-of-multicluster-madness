@@ -4,7 +4,7 @@ metadata:
   annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
   name: install-gitea-operator-policygenerator
-  namespace: gitea-applications
+  namespace: rhacm-applications
 spec:
   componentKinds:
     - group: apps.open-cluster-management.io
@@ -27,7 +27,7 @@ metadata:
   labels:
     app: install-gitea-operator-policygenerator
   name: install-gitea-operator-policygenerator
-  namespace: gitea-applications
+  namespace: rhacm-applications
 spec:
   channel: gitea-channels/ggithubcom-kenmoini-multiverse-of-multicluster-madness
   placement:
