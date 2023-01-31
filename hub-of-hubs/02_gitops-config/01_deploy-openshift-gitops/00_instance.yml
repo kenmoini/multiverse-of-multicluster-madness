@@ -102,6 +102,7 @@ spec:
         cpu: 250m
         memory: 512Mi
   rbac:
+    #defaultPolicy: 'role:readonly'
     defaultPolicy: 'role:admin'
     policy: |
       g, cluster-admins, role:admin
