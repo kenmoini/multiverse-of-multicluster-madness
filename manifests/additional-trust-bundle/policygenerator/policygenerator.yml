@@ -17,8 +17,8 @@ policyDefaults:
   remediationAction: enforce
   severity: high
   consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
-  policySets: 
-    - global-base-configuration
+  #policySets: 
+  #  - global-base-configuration
 policies:
   - name: additional-trust-bundles
     manifests:
