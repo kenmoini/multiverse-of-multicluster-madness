@@ -1,10 +1,11 @@
 bases:
 - ../base
 
-#patchesStrategicMerge:
+patchesStrategicMerge:
+- lso-odf-storagecluster.yml
+
 resources:
 - lso-localvolumediscovery.yml
 - lso-localvolumeset.yml
 - lso-rook-ceph-operator-config-cm.yml
-- lso-odf-storagecluster.yml
 - default-sc.yml
