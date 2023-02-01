@@ -1,0 +1,260 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: install-loki-stack
+  namespace: rhacm-policies
+spec:
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: install-loki-stack-prereqs
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: project.openshift.io/v1
+            kind: Project
+            metadata:
+              name: openshift-operators-redhat
+            spec: {}
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: project.openshift.io/v1
+            kind: Project
+            metadata:
+              name: openshift-logging
+            spec: {}
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1
+            kind: OperatorGroup
+            metadata:
+              name: loki
+              namespace: openshift-operators-redhat
+            spec: {}
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: loki-operator
+              namespace: openshift-operators-redhat
+            spec:
+              channel: stable
+              installPlanApproval: Automatic
+              name: loki-operator
+              source: redhat-operators
+              sourceNamespace: openshift-marketplace
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1
+            kind: OperatorGroup
+            metadata:
+              name: openshift-logging-5bc8v
+              namespace: openshift-logging
+            spec:
+              targetNamespaces:
+              - openshift-logging
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: cluster-logging
+              namespace: openshift-logging
+            spec:
+              channel: stable
+              installPlanApproval: Automatic
+              name: cluster-logging
+              source: redhat-operators
+              sourceNamespace: openshift-marketplace
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: elasticsearch-operator
+              namespace: openshift-operators-redhat
+            spec:
+              channel: stable
+              installPlanApproval: Automatic
+              name: elasticsearch-operator
+              source: redhat-operators
+              sourceNamespace: openshift-marketplace
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: objectbucket.io/v1alpha1
+            kind: ObjectBucketClaim
+            metadata:
+              finalizers:
+              - objectbucket.io/finalizer
+              name: logs-bucket
+              namespace: openshift-logging
+            spec:
+              additionalConfig:
+                bucketclass: noobaa-default-bucket-class
+              bucketName: logs-bucket-851ee325-af25-468f-9374-0c2857f7d238
+              generateBucketName: logs-bucket
+              objectBucketName: obc-open-cluster-management-logs-bucket
+              storageClassName: openshift-storage.noobaa.io
+        remediationAction: enforce
+        severity: low
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: install-loki-stack
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: logging-loki-s3
+              namespace: openshift-logging
+            stringData:
+              access_key_id: '{{ fromSecret "openshift-logging"
+                "logs-bucket" "AWS_ACCESS_KEY_ID" | base64dec }}'
+              access_key_secret: '{{ fromSecret "openshift-logging"
+                "logs-bucket" "AWS_SECRET_ACCESS_KEY" | base64dec }}'
+              bucketnames: '{{ ( index ( lookup "objectbucket.io/v1alpha1" "ObjectBucketClaim"
+                "openshift-logging" "logs-bucket").spec.bucketName
+                ) }}'
+              endpoint: s3.openshift-storage.svc:443
+            type: Opaque
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: loki.grafana.com/v1
+            kind: LokiStack
+            metadata:
+              name: logging-loki
+              namespace: openshift-logging
+            spec:
+              size: 1x.small
+              storage:
+                schemas:
+                - effectiveDate: "2022-06-01"
+                  version: v12
+                secret:
+                  name: logging-loki-s3
+                  type: s3
+              storageClassName: gp2
+              tenants:
+                mode: openshift-logging
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: logging.openshift.io/v1
+            kind: ClusterLogging
+            metadata:
+              annotations:
+                logging.openshift.io/preview-vector-collector: enabled
+              name: instance
+              namespace: openshift-logging
+            spec:
+              collection:
+                type: vector
+              logStore:
+                lokistack:
+                  name: logging-loki
+                type: lokistack
+              managementState: Managed
+        remediationAction: enforce
+        severity: low
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: copy-loki-secret
+        annotations:
+          policy.open-cluster-management.io/disable-templates: "true"
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: loki-secret-creator-sa
+              namespace: openshift-logging
+        - complianceType: musthave
+          objectDefinition:
+            kind: ClusterRoleBinding
+            apiVersion: rbac.authorization.k8s.io/v1
+            metadata:
+              name: loki-secret-creator
+              namespace: openshift-logging
+            subjects:
+              - kind: ServiceAccount
+                name: loki-secret-creator-sa
+                namespace: openshift-logging
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: loki-secret-creator
+        - complianceType: musthave
+          objectDefinition:
+            kind: ClusterRole
+            apiVersion: rbac.authorization.k8s.io/v1
+            metadata:
+              name: loki-secret-creator
+              namespace: openshift-logging
+            rules:
+              - apiGroups: [""]
+                resources: ["secrets"]
+                verbs:     ["get","create","patch","update"]
+              - apiGroups: ["route.openshift.io"]
+                resources: ["routes"]
+                verbs:     ["get","create","patch","update"]
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              name: loki-secret-cronjob
+              namespace: openshift-logging
+            spec:
+              parallelism: 1
+              completions: 1
+              activeDeadlineSeconds: 500
+              backoffLimit: 50
+              template:
+                metadata:
+                  name: loki-secret-cronjob
+                spec:
+                  containers:
+                  - name: loki-secret-provisioner
+                    image: registry.redhat.io/openshift4/ose-cli:v4.11
+                    imagePullPolicy: IfNotPresent
+                    command:
+                    - /bin/bash
+                    - -c
+                    - |
+                      while [[ -z "$TOKEN" && -z "$ROUTE" || "$TOKEN" == "" ]]
+                      do
+                          export TOKEN=`oc get secret logcollector-token -n openshift-logging -o go-template='{{.data.token|base64decode}}'`
+                          export ROUTE=`oc get route logging-loki -n openshift-logging -o go-template='{{.spec.host}}'`
+                          sleep 10s
+                      done
+                      cat <<EOF | oc apply -f -
+                      apiVersion: v1
+                      kind: Secret
+                      metadata:
+                        name: logcollector-token
+                        namespace: rhacm-policies
+                      type: Opaque
+                      stringData:
+                        token: $TOKEN
+                        route: $ROUTE
+                      EOF
+                  restartPolicy: OnFailure
+                  serviceAccountName: loki-secret-creator-sa
+        remediationAction: enforce
+        severity: low
