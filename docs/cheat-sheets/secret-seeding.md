@@ -141,6 +141,12 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/mvomcm-geo-hub-ztp -C "mvomcm-geo-hub-ztp" -
 oc rsh -n vault vault-0 vault kv put -mount=kv geo-ztp-ssh-keypair private_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp)" public_key="$(cat ~/.ssh/mvomcm-geo-hub-ztp.pub)"
 ```
 
+## ManagedCluster Tokens
+
+So importing a ManagedCluster means you need to exchange some cluster-admin level ServiceAccount token that was created on the ManagedCluster and add it to the configuration and a Secret on the Hub cluster - the maybe easiest way to do this in a GitOps-y way is with a Vaulted password.
+
+Check [docs/examples/managedclusters](docs/examples/managedclusters) for more information and examples.
+
 ## Additional Credentials
 
 Some times for different adaptations of this demo environment you may have things like credentials to the hyperscalar clouds that are leveraged for things such as IPI deployments of clusters, Hypershift, and ZTP.  You can create those secrets in Vault as well, and then use the External Secrets Operator to pull them into the clusters with the different example ExternalSecrets.

@@ -1,0 +1,95 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: core-ocp
+
+---
+
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  name: core-ocp
+  labels:
+    name: core-ocp
+    cloud: auto-detect
+    vendor: auto-detect
+    cluster.open-cluster-management.io/clusterset: geo-hubs
+    cluster-role: geo-hub
+    deploy-lso-odf: "true"
+    ztp-as-a-service: "true"
+  annotations: {}
+spec:
+  hubAcceptsClient: true
+---
+# You can create this secret in Vault by running the following commands:
+# ## [ManagedCluster] Get the Token
+# TOKEN=$(oc get secret/mcm-cluster-importer-sa-token -n kube-system -o jsonpath='{.data.token}' | base64 -d)
+# SERVER=$(oc get infrastructure cluster -o jsonpath='{.status.apiServerURL}')
+# ## Create the Token in the Vault
+# ### Make sure to log back into the Hub-of-Hubs or wherever your Vault is running
+# oc rsh -n vault vault-0 vault kv put -mount=kv geo-hubs/core-ocp token="$TOKEN" autoImportRetry="3" server="$SERVER"
+
+kind: ExternalSecret
+apiVersion: external-secrets.io/v1beta1
+metadata:
+  name: auto-import-secret
+  namespace: core-ocp
+spec:
+  refreshInterval: 10m
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: hoh-vault
+  data:
+    - secretKey: token # the key to be made in this k8s Secret
+      remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: geo-hubs/core-ocp # name of the secret under the target Vault path
+        property: token # # name of the key in that named Vault secret
+    - secretKey: server # the key to be made in this k8s Secret
+      remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: geo-hubs/core-ocp # name of the secret under the target Vault path
+        property: server # # name of the key in that named Vault secret
+    - secretKey: autoImportRetry # the key to be made in this k8s Secret
+      remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: geo-hubs/core-ocp # name of the secret under the target Vault path
+        property: autoImportRetry # # name of the key in that named Vault secret
+  target:
+    creationPolicy: None
+    deletionPolicy: Retain
+    name: auto-import-secret # The name of the k8s Secret to be created
+
+---
+
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: core-ocp
+  namespace: core-ocp
+spec:
+  clusterName: core-ocp
+  clusterNamespace: core-ocp
+  clusterLabels:
+    name: core-ocp
+    cloud: auto-detect
+    vendor: auto-detect
+    cluster.open-cluster-management.io/clusterset: geo-hubs
+    cluster-role: geo-hub
+    deploy-lso-odf: "true"
+    ztp-as-a-service: "true"
+  applicationManager:
+    enabled: true
+    argocdCluster: false
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  iamPolicyController:
+    enabled: true
