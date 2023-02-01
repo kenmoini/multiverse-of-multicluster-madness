@@ -3,3 +3,4 @@ resources:
 #- lso-localvolumeset.yml
 - lso-odf-storagecluster.yml
 - lso-odf-storagesystem.yml
+- default-sc.yml
