@@ -1,0 +1,105 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: install-mco
+  namespace: rhacm-policies
+spec:
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: install-mco-prereqs
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: project.openshift.io/v1
+            kind: Project
+            metadata:
+              name: open-cluster-management-observability
+            spec: {}
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: objectbucket.io/v1alpha1
+            kind: ObjectBucketClaim
+            metadata:
+              finalizers:
+              - objectbucket.io/finalizer
+              name: metrics-bucket
+              namespace: open-cluster-management-observability
+            spec:
+              additionalConfig:
+                bucketclass: noobaa-default-bucket-class
+              bucketName: metrics-bucket-851ee325-af25-468f-9374-0c2857f7d238
+              generateBucketName: metrics-bucket
+              objectBucketName: obc-open-cluster-management-metrics-bucket
+              storageClassName: openshift-storage.noobaa.io
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            data:
+              .dockerconfigjson: '{{ fromSecret "openshift-config" "pull-secret" ".dockerconfigjson" }}'
+            kind: Secret
+            metadata:
+              name: multiclusterhub-operator-pull-secret
+              namespace: open-cluster-management-observability
+            type: kubernetes.io/dockerconfigjson
+        remediationAction: enforce
+        severity: low
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: install-mco
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: thanos-object-storage
+              namespace: open-cluster-management-observability
+            stringData:
+              thanos.yaml: |
+                type: s3
+                config:
+                  bucket: '{{ ( index ( lookup "objectbucket.io/v1alpha1" "ObjectBucketClaim" "open-cluster-management-observability" "metrics-bucket").spec.bucketName ) }}'
+                  endpoint: s3.openshift-storage.svc:443
+                  insecure: false
+                  access_key: '{{ fromSecret "open-cluster-management-observability" "metrics-bucket" "AWS_ACCESS_KEY_ID" | base64dec }}'
+                  secret_key: '{{ fromSecret "open-cluster-management-observability" "metrics-bucket" "AWS_SECRET_ACCESS_KEY" | base64dec }}'
+                  http_config:
+                    insecure_skip_verify: true
+            type: Opaque
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: observability.open-cluster-management.io/v1beta2
+            kind: MultiClusterObservability
+            metadata:
+              name: observability
+            spec:
+              enableDownsampling: true
+              observabilityAddonSpec:
+                enableMetrics: true
+                interval: 300
+              storageConfig:
+                alertmanagerStorageSize: 1Gi
+                compactStorageSize: 100Gi
+                metricObjectStorage:
+                  http_config:
+                    insecure_skip_verify: true
+                  key: thanos.yaml
+                  name: thanos-object-storage
+                receiveStorageSize: 100Gi
+                ruleStorageSize: 1Gi
+                storageClass: gp2
+                storeStorageSize: 10Gi
+        remediationAction: enforce
+        severity: low
