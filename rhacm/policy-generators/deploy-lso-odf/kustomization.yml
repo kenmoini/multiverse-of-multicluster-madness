@@ -1,5 +1,5 @@
 generators:
-  - policygenerator-aws.yml
+  #- policygenerator-aws.yml
   - policygenerator-local-infra-nodes.yml
 commonLabels:
   manifest-group: deploy-lso-odf
