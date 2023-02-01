@@ -1,0 +1,6 @@
+generators:
+  - policygenerator.yml
+commonLabels:
+  manifest-group: deploy-rhacm-hub
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous
