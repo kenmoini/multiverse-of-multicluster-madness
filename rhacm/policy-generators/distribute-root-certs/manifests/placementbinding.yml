@@ -1,0 +1,18 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-distribute-root-certs
+  namespace: rhacm-policies
+
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: hub-of-hubs-clusters
+
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: distribute-root-certs-cm
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: distribute-root-certs-secret
