@@ -1,0 +1,30 @@
+{{- if .Values.gitea.enabled }}
+apiVersion: gpte.opentlc.com/v1
+kind: Gitea
+metadata:
+  name: gitea
+  namespace: {{ .Values.gitea.namespace }}
+spec:
+  giteaSsl: true
+  giteaAdminUser: {{ .Values.gitea.config.adminUser }}
+  giteaAdminPassword: "{{ .Values.gitea.config.adminPassword }}"
+  giteaAdminEmail: {{ .Values.gitea.config.adminEmail }}
+  giteaImageTag: latest
+  giteaVolumeSize: 10Gi
+  giteaVolumeStorageClass: {{ .Values.gitea.config.storageClassName }}
+  postgresqlVolumeSize: 4Gi
+  postgresqlVolumeStorageClass: {{ .Values.gitea.config.storageClassName }}
+  giteaCreateUsers: {{ .Values.gitea.config.createUsers.enabled }}
+  giteaGenerateUserFormat: "{{ .Values.gitea.config.createUsers.format }}"
+  giteaUserNumber: {{ .Values.gitea.config.createUsers.count }}
+  giteaUserPassword: {{ .Values.gitea.config.createUsers.password }}
+  giteaMigrateRepositories: {{ .Values.gitea.config.migrations.enabled }}
+  {{- if .Values.gitea.config.migrations.repos }}
+  giteaRepositoriesList:
+    {{- range .Values.gitea.config.migrations.repos }}
+    - repo: {{ .repo }}
+      name: {{ .name }}
+      private: {{ .private }}
+    {{- end }}
+  {{- end }}
+{{- end }}

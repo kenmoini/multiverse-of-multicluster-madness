@@ -1,0 +1,32 @@
+{{- if .Values.http_mirror.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mirror-config
+  namespace: {{ .Values.http_mirror.namespace }}
+data:
+  config.yml: |-
+    app:
+      assets:
+{{- range .Values.http_mirror.mirrored_versions }}
+        # {{ . }} Live ISO
+        - source: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ . }}/latest/rhcos-live.x86_64.iso
+          destination: "/tmp/server/pub/openshift-v4/x86_64/dependencies/rhcos/{{ . }}/latest/rhcos-live.x86_64.iso"
+        # {{ . }} RootFS
+        - source: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ . }}/latest/rhcos-live-rootfs.x86_64.img
+          destination: "/tmp/server/pub/openshift-v4/x86_64/dependencies/rhcos/{{ . }}/latest/rhcos-live-rootfs.x86_64.img"
+          #overwrite: true
+{{ end }}
+      server:
+        host: 0.0.0.0
+        base_path: "/pub/"
+        fs_path: "/tmp/server/pub"
+        skip_tls_verify: true
+        port: 8080
+        timeouts:
+          server: 0
+          read: 0
+          write: 0
+          idle: 0
+{{- end }}

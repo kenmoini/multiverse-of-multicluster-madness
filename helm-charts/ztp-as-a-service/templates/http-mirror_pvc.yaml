@@ -1,0 +1,15 @@
+{{- if .Values.http_mirror.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ztp-mirror
+  namespace: {{ .Values.http_mirror.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ .Values.http_mirror.pvc_size }}
+{{- end }}

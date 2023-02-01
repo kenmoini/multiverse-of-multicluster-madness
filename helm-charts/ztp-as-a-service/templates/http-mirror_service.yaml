@@ -1,0 +1,15 @@
+{{- if .Values.http_mirror.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ztp-mirror
+  namespace: {{ .Values.http_mirror.namespace }}
+spec:
+  selector:
+    app: mirror-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+{{- end }}

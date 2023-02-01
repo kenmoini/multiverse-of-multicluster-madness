@@ -1,0 +1,11 @@
+{{- if .Values.http_mirror.enabled }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: trusted-ca
+  namespace: {{ .Values.http_mirror.namespace }}
+  labels:
+    config.openshift.io/inject-trusted-cabundle: 'true'
+data: {}
+{{- end }}
