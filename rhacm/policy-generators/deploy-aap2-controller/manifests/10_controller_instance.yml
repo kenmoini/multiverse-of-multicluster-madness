@@ -1,0 +1,48 @@
+apiVersion: automationcontroller.ansible.com/v1beta1
+kind: AutomationController
+metadata:
+  labels:
+    app.kubernetes.io/component: automationcontroller
+    app.kubernetes.io/managed-by: automationcontroller-operator
+    app.kubernetes.io/name: ac-tower
+    app.kubernetes.io/operator-version: ''
+    app.kubernetes.io/part-of: ac-tower
+  name: ac-tower
+  namespace: aap2
+spec:
+  admin_email: notkemo@gmail.com
+  admin_user: admin
+  ee_resource_requirements:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 250m
+  create_preload_data: true
+  route_tls_termination_mechanism: Edge
+  garbage_collect_secrets: false
+  loadbalancer_port: 80
+  projects_use_existing_claim: _No_
+  task_resource_requirements:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 250m
+  image_pull_policy: IfNotPresent
+  projects_storage_size: 8Gi
+  task_privileged: true
+  projects_storage_class: default-sc
+  projects_storage_access_mode: ReadWriteOnce
+  web_resource_requirements:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 250m
+  projects_persistence: true
+  replicas: 1
+  loadbalancer_protocol: http
+  nodeport_port: 30080
+  #postgres_data_path: /var/tmp
+  #postgres_storage_class: {{ aap_controller_storageclass_name }}
+  postgres_configuration_secret: ac-tower-postgres-configuration
+
+  #bundle_cacert_secret: cluster-root-ca-aap2-bundle

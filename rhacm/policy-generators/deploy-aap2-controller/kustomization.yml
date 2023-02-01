@@ -1,0 +1,6 @@
+generators:
+  - policygenerator.yml
+commonLabels:
+  manifest-group: deploy-aap2-controller
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous

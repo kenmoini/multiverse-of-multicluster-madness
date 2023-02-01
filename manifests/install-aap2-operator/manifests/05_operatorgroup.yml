@@ -1,6 +1,0 @@
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: ansible-automation-platform-operator
-  namespace: aap2
-spec: {}

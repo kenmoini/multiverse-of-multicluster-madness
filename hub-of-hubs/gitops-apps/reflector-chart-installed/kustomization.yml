@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - 00_namespace.yml
+  - 07_rbac_rolebinding.yml
+  - 10_argocd_application.yml

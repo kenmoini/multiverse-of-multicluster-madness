@@ -1,0 +1,28 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: ztp-as-a-service-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: ztp-as-a-service
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: ztp-as-a-service-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: ztp-as-a-service
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []

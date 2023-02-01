@@ -1,0 +1,22 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: reflector-chart-installed-pg
+  #annotations:
+  #  argocd.argoproj.io/compare-options: IgnoreExtraneous
+placementBindingDefaults:
+  name: reflector-chart-installed-pg-pb
+policyDefaults:
+  namespace: rhacm-policies
+  # Use the name of an existing placement rule
+  placement:
+    placementRuleName: geo-hub-clusters
+  remediationAction: enforce
+  severity: high
+  consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
+  #policySets:
+  #  - reflector-chart-installed
+policies:
+  - name: reflector-chart-installed
+    manifests:
+      - path: manifests

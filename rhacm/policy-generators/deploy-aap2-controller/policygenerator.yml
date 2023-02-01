@@ -1,0 +1,44 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: deploy-aap2-controller-pg
+  #annotations:
+  #  argocd.argoproj.io/compare-options: IgnoreExtraneous
+placementBindingDefaults:
+  name: deploy-aap2-controller-pg-pb
+policyDefaults:
+  namespace: rhacm-policies
+  # Use the name of an existing placement rule
+  placement:
+    placementRuleName: ztp-as-a-service-clusters
+  remediationAction: enforce
+  severity: high
+  consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
+  #policySets:
+  #  - deploy-aap2-controller
+policies:
+  - name: deploy-aap2-controller
+    manifests:
+      - path: manifests
+        patches:
+          - apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              labels:
+                operators.coreos.com/ansible-automation-platform-operator.ansible-automation-platfor: ''
+              name: ansible-automation-platform-operator
+              namespace: aap2
+            spec:
+              channel: stable-2.3-cluster-scoped
+              config:
+                nodeSelector:
+                  node-role.kubernetes.io/infra: ""
+                tolerations:
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Equal
+                  value: "reserved"
+                - effect: NoExecute
+                  key: node-role.kubernetes.io/infra
+                  operator: Equal
+                  value: "reserved"
