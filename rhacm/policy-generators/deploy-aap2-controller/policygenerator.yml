@@ -21,24 +21,12 @@ policies:
     manifests:
       - path: manifests
         patches:
-          - apiVersion: operators.coreos.com/v1alpha1
-            kind: Subscription
+          - apiVersion: automationcontroller.ansible.com/v1beta1
+            kind: AutomationController
             metadata:
-              labels:
-                operators.coreos.com/ansible-automation-platform-operator.ansible-automation-platfor: ''
-              name: ansible-automation-platform-operator
+              name: ac-tower
               namespace: aap2
             spec:
-              channel: stable-2.3-cluster-scoped
-              config:
-                nodeSelector:
-                  node-role.kubernetes.io/infra: ""
-                tolerations:
-                - effect: NoSchedule
-                  key: node-role.kubernetes.io/infra
-                  operator: Equal
-                  value: "reserved"
-                - effect: NoExecute
-                  key: node-role.kubernetes.io/infra
-                  operator: Equal
-                  value: "reserved"
+              #bundle_cacert_secret: cluster-root-ca-aap2-bundle
+              admin_email: kmoini@redhat.com
+              admin_user: admin

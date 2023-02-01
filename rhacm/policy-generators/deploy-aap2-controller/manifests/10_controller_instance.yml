@@ -10,6 +10,7 @@ metadata:
   name: ac-tower
   namespace: aap2
 spec:
+  #bundle_cacert_secret: cluster-root-ca-aap2-bundle
   admin_email: notkemo@gmail.com
   admin_user: admin
   ee_resource_requirements:
@@ -44,5 +45,3 @@ spec:
   #postgres_data_path: /var/tmp
   #postgres_storage_class: {{ aap_controller_storageclass_name }}
   postgres_configuration_secret: ac-tower-postgres-configuration
-
-  #bundle_cacert_secret: cluster-root-ca-aap2-bundle
