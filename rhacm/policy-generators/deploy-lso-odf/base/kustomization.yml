@@ -1,3 +1,4 @@
 resources:
-- lso-localvolumediscovery.yml
-- lso-localvolumeset.yml
+#- lso-localvolumediscovery.yml
+#- lso-localvolumeset.yml
+- lso-odf-storagecluster.yml
