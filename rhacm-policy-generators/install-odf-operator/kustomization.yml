@@ -1,6 +1,0 @@
-generators:
-  - policygenerator.yml
-commonLabels:
-  manifest-group: install-odf-operator
-commonAnnotations:
-  argocd.argoproj.io/compare-options: IgnoreExtraneous
