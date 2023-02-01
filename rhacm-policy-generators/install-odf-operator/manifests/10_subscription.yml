@@ -6,6 +6,7 @@ metadata:
   name: odf-operator
   namespace: openshift-storage
 spec:
+  # since odf channels are versioned, we need to pin to a specific version or just let it choose the default for that cluster version (usually works)
   #channel: stable
   installPlanApproval: Automatic
   name: odf-operator
