@@ -5,4 +5,5 @@ kind: Kustomization
 
 resources:
   - 00_instance.yml
+  - 01_configmap.yml
   - 05_rbac.yml

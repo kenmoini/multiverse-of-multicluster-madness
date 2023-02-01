@@ -15,6 +15,15 @@ spec:
         cpu: 250m
         memory: 1024Mi
     sharding: {}
+    volumeMounts:
+    - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+      subPath: ca-bundle.crt
+      name: cluster-root-ca-bundle
+    volumes:
+      - configMap:
+          name: cluster-root-ca-bundle
+        name: cluster-root-ca-bundle
+        optional: true
   dex:
     openShiftOAuth: true
     resources:
