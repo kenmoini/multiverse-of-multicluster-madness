@@ -3,9 +3,9 @@ entries:
   omg-shoes:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-02-01T16:09:17.092245-06:00"
+    created: "2023-02-01T16:12:59.186348-06:00"
     description: A Helm chart for Kubernetes that deploys a simple HTML application
-    digest: 2a4720d447c6d3e41e9b6549ff0a347d88746a29299cf3631909e5928b768bd5
+    digest: 7b9fa8324bf9f1f59b303ebe7fcd6aa4a30a15a88569dd68d79d1d87c073f85c
     name: omg-shoes
     type: application
     urls:
@@ -13,8 +13,18 @@ entries:
     version: 1.0.0
   ztp-as-a-service:
   - apiVersion: v2
+    appVersion: 4.2.1
+    created: "2023-02-01T16:12:59.187903-06:00"
+    description: A Helm chart for Kubernetes
+    digest: ee44cf868fd783ad55da6929bf9ccb27fde368a9035831ef84736bfbf894a641
+    name: ztp-as-a-service
+    type: application
+    urls:
+    - https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/ztp-as-a-service-4.2.1.tgz
+    version: 4.2.1
+  - apiVersion: v2
     appVersion: 4.2.0
-    created: "2023-02-01T16:09:17.093313-06:00"
+    created: "2023-02-01T16:12:59.187528-06:00"
     description: A Helm chart for Kubernetes
     digest: 4c18dcba82909644bfb5c1a52f91c7bdb762bb59d93331ea9df57171cbb0afaa
     name: ztp-as-a-service
@@ -24,7 +34,7 @@ entries:
     version: 4.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-02-01T16:09:17.092949-06:00"
+    created: "2023-02-01T16:12:59.186695-06:00"
     description: A Helm chart for Kubernetes
     digest: e97c18f591dde2b8fa98d0fd1562ed145597a800c7d96b7e4f432aa924e2047c
     name: ztp-as-a-service
@@ -32,4 +42,4 @@ entries:
     urls:
     - https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/ztp-as-a-service-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-01T16:09:17.091504-06:00"
+generated: "2023-02-01T16:12:59.186005-06:00"
