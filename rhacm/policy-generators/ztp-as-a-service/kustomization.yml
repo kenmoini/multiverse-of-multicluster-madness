@@ -1,0 +1,6 @@
+generators:
+  - policygenerator.yml
+commonLabels:
+  manifest-group: ztp-as-a-service
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous

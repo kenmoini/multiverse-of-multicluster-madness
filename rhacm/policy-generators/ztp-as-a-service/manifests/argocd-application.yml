@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ztp-as-a-service
+  namespace: openshift-gitops
+spec:
+  project: helm-installed
+  source:
+    chart: ztp-as-a-service
+    repoURL: https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/
+    #targetRevision: 2.7.2
+    helm:
+      releaseName: ztp-as-a-service
+      #valueFiles:
+      #- values.yaml
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      #prune: true
+      allowEmpty: true
+      #selfHeal: false # overrides changes made on the cluster that drift from git state
+    syncOptions:
+      - CreateNamespace=true
