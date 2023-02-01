@@ -5,5 +5,6 @@ resources:
   - 00_namespace.yml
   - 07_operatorgroup.yml
   - 10_subscription.yml
+  - cluster_console_config.yml
 #patchesStrategicMerge:
 #- operator-nodeselectors.yml
