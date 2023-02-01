@@ -13,8 +13,10 @@ spec:
     repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
     targetRevision: HEAD
     path: hub-of-hubs/gitops-apps
-    directory:
-      recurse: true
+    #directory:
+    #  recurse: true
+    kustomize:
+      version: v4.4.1
   project: hub-of-hubs-cluster-apps
   syncPolicy:
     automated:
