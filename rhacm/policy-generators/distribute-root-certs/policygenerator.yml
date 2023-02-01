@@ -10,7 +10,7 @@ policyDefaults:
   namespace: rhacm-policies
   # Use the name of an existing placement rule
   placement:
-    placementRuleName: all-openshift-clusters
+    placementRuleName: management-clusters
   remediationAction: enforce
   severity: high
   consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy

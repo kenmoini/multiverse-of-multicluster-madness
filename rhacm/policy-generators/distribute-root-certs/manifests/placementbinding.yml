@@ -7,7 +7,7 @@ metadata:
 placementRef:
   apiGroup: apps.open-cluster-management.io
   kind: PlacementRule
-  name: hub-of-hubs-clusters
+  name: all-openshift-clusters
 
 subjects:
 - apiGroup: policy.open-cluster-management.io
