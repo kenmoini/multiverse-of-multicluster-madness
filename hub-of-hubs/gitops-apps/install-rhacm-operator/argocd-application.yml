@@ -22,7 +22,7 @@ spec:
     repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
     targetRevision: HEAD
     ## Path is the repo directory that containers the cluster(s) configuration and deployment manifests
-    path: rhacm-policy-generators/install-rhacm-operator/manifests
+    path: rhacm/policy-generators/install-rhacm-operator/manifests
     ## Enable recursive sub-directory search to enable management of multiple cluster from this single Application
     #directory:
     #  recurse: true

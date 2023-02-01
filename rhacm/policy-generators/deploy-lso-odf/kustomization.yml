@@ -1,0 +1,7 @@
+generators:
+  #- policygenerator-aws.yml
+  - policygenerator-local-infra-nodes.yml
+commonLabels:
+  manifest-group: deploy-lso-odf
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous

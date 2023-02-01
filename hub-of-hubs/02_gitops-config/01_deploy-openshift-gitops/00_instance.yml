@@ -133,6 +133,7 @@ spec:
   kustomizeBuildOptions: '--enable-helm'
   kustomizeVersions:
     # you can get the updated version by running the `kustomize version` command in the argocd-server pod
+    # or from https://docs.openshift.com/container-platform/4.12/cicd/gitops/gitops-release-notes.html
     - path: /usr/local/bin/kustomize
       version: v4.4.1
   resourceCustomizations: |

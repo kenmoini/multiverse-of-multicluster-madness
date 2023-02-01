@@ -1,0 +1,26 @@
+apiVersion: local.storage.openshift.io/v1alpha1
+kind: LocalVolumeSet
+metadata:
+  finalizers:
+    - storage.openshift.com/local-volume-protection
+  name: odf
+  namespace: openshift-local-storage
+spec:
+  nodeSelector:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: node-role.kubernetes.io/infra
+            operator: Exists
+  tolerations:
+    - effect: NoSchedule
+      key: node.ocs.openshift.io/storage
+      operator: Equal
+      value: 'true'
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/infra
+      operator: Equal
+      value: "reserved"
+    - effect: NoExecute
+      key: node-role.kubernetes.io/infra
+      operator: Equal
+      value: "reserved"

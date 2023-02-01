@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: open-cluster-management
+  namespace: open-cluster-management
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  targetNamespaces:
+    - open-cluster-management

@@ -1,0 +1,3 @@
+resources:
+- lso-localvolumediscovery.yml
+- lso-localvolumeset.yml

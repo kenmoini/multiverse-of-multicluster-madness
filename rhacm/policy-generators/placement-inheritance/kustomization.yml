@@ -1,0 +1,6 @@
+generators:
+  - policygenerator.yml
+commonLabels:
+  manifest-group: placement-inheritance
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous

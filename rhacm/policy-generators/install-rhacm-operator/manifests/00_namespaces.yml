@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management
+  annotations:
+    # An ArgoCD Sync Wave will sync these namespaces before any other resources in the Application's context.
+    argocd.argoproj.io/sync-wave: "-1"
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: multicluster-engine
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "-1"
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: hive
+#  annotations:
+#    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management-agent
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "-1"
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management-agent-addon
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "-1"
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/infra"},{"operator": "Exists", "effect": "NoExecute", "key": "node-role.kubernetes.io/infra"}]'
+---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: assisted-installer

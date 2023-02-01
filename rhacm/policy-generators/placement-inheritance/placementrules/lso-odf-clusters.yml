@@ -1,0 +1,28 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: lso-odf-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: deploy-lso-odf
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: lso-odf-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: deploy-lso-odf
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []

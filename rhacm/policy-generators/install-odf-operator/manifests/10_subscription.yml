@@ -1,0 +1,30 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/odf-operator.openshift-storage: ''
+  name: odf-operator
+  namespace: openshift-storage
+spec:
+  # since odf channels are versioned, we need to pin to a specific version or just let it choose the default for that cluster version (usually works)
+  #channel: stable
+  installPlanApproval: Automatic
+  name: odf-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+# This will deploy the actual operator controllers to the infra nodes
+#  # https://access.redhat.com/articles/6408481
+#  config:
+#    tolerations:
+#    - effect: NoSchedule
+#      key: node.ocs.openshift.io/storage
+#      operator: Equal
+#      value: 'true'
+#    - effect: NoSchedule
+#      key: node-role.kubernetes.io/infra
+#      operator: Equal
+#      value: "reserved"
+#    - effect: NoExecute
+#      key: node-role.kubernetes.io/infra
+#      operator: Equal
+#      value: "reserved"
