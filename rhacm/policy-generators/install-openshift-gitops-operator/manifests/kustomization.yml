@@ -6,3 +6,4 @@ resources:
   - 00_namespace.yml
   - 05_operatorgroup.yml
   - 10_subscription.yml
+  - ../../../../hub-of-hubs/02_gitops-config/01_deploy-openshift-gitops/

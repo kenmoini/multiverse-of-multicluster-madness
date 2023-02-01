@@ -83,6 +83,8 @@ spec:
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
+  tls:
+    ca: {}
   prometheus:
     enabled: false
     ingress:
@@ -130,7 +132,7 @@ spec:
       - effect: NoExecute
         key: node-role.kubernetes.io/infra
         operator: Exists
-  kustomizeBuildOptions: '--enable-helm'
+  kustomizeBuildOptions: '--enable-helm --helm-command "/usr/local/bin/helm --insecure-skip-tls-verify"'
   kustomizeVersions:
     # you can get the updated version by running the `kustomize version` command in the argocd-server pod
     # or from https://docs.openshift.com/container-platform/4.12/cicd/gitops/gitops-release-notes.html
