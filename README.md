@@ -14,6 +14,21 @@ This repository is a collection of GitOps-centric resources to manage Kubernetes
 
 ## What's in the box?
 
+### Example Workflows
+
+Any combination of Kustomize, Helm, ArgoCD, RHACM Apps, RHACM Policies, and RHACM PolicyGenerators that you can think of is probably available in this repository in a place or few.  There are different instances where one or a combination of sorts is the best option compared to others, which one you'll leverage will depend on what you're trying to state.
+
+#### Hub-of-Hubs Cluster Bootstrapping
+
+- [Example](hub-of-hubs/01_bootstrap/install-hashicorp-vault-chart/kustomization.yml) Kustomization pointing to another folder that installs a Helm Chart that was templated to a file
+
+#### GitOps Bootstrapping
+
+- [Example](hub-of-hubs/02_gitops-config/02_config-openshift-gitops/10_hoh-cluster-apps.yml) Bootstrapping a cluster by just installing ArgoCD, and configuring it with a Kustomized App-of-Apps to continue the subsequently sync-wave'd Apps
+- ArgoCD Application that installs a Helm Chart from a Helm Repository
+
+---
+
 ### Directory Structure
 
 ```
@@ -75,8 +90,16 @@ Most mutli-cluster architectures operate in a "Hub and Spoke" model, and can be 
 3. [Optional] Initialize the Vault `oc apply -k hub-of-hubs/99_vault_init`
 4. *[Do some Secrets seeding stuff...](docs/cheat-sheets/secret-seeding.md)*
 5. Configure the OpenShift GitOps instance to bootstrap the rest of the process: `oc apply -k hub-of-hubs/02_gitops-config/`
-6. ??????
-7. PROFIT!!!!!1
+6. Wait for RHACM to deploy and the Hub-of-Hub's local-cluster to come online
+7. Label Hub-of-Hub's local-cluster ManagedCluster CR:
+
+```bash
+oc label managedcluster local-cluster cluster-role=hub-of-hubs
+oc label managedcluster local-cluster cluster.open-cluster-management.io/clusterset=hub-of-hubs --overwrite
+```
+
+8. ??????
+9.  PROFIT!!!!!1
 
 From there, ArgoCD will sync things to that repo in order to install Red Hat Advanced Cluster Management and a Basic MultiClusterHub.  You could add additional things to the `hub-of-hubs/01_bootstrap/` directory to install other things, however from here forward this repository will leverage RHACM to manage the clusters via Policies.
 
