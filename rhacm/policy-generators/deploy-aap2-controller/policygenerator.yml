@@ -27,6 +27,6 @@ policies:
               name: ac-tower
               namespace: aap2
             spec:
-              #bundle_cacert_secret: cluster-root-ca-aap2-bundle
+              bundle_cacert_secret: cluster-root-ca-bundle
               admin_email: kmoini@redhat.com
               admin_user: admin
