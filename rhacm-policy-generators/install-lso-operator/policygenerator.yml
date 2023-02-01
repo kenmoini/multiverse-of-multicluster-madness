@@ -1,0 +1,45 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: install-lso-operator-pg
+  #annotations:
+  #  argocd.argoproj.io/compare-options: IgnoreExtraneous
+placementBindingDefaults:
+  name: install-lso-operator-pg-pb
+policyDefaults:
+  namespace: rhacm-policies
+  # Use the name of an existing placement rule
+  placement:
+    placementRuleName: lso-odf-clusters
+  remediationAction: enforce
+  severity: high
+  consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
+  #policySets:
+  #  - install-lso-operator
+policies:
+  - name: install-lso-operator
+    manifests:
+      - path: manifests
+        patches:
+          - apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: local-storage-operator
+              namespace: openshift-local-storage
+            spec:
+              config:
+                nodeSelector:
+                  node-role.kubernetes.io/infra: ""
+                tolerations:
+                - effect: NoSchedule
+                  key: node.ocs.openshift.io/storage
+                  operator: Equal
+                  value: 'true'
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Equal
+                  value: "reserved"
+                - effect: NoExecute
+                  key: node-role.kubernetes.io/infra
+                  operator: Equal
+                  value: "reserved"
