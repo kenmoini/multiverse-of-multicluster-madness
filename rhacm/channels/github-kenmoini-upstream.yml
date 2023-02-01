@@ -1,0 +1,12 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Channel
+metadata:
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    apps.open-cluster-management.io/reconcile-rate: medium
+  name: ggithubcom-kenmoini-multiverse-of-multicluster-madness
+  namespace: rhacm-channels
+spec:
+  type: Git
+  pathname: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
