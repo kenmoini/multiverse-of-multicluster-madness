@@ -5,7 +5,7 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
-  name: install-hoh-grafana
+  name: install-geo-hub-grafana
   namespace: rhacm-policies
 spec:
   disabled: false
@@ -14,7 +14,7 @@ spec:
       apiVersion: policy.open-cluster-management.io/v1
       kind: ConfigurationPolicy
       metadata:
-        name: install-hoh-grafana
+        name: install-grafana-prereqs
       spec:
         object-templates:
         - complianceType: musthave
@@ -89,13 +89,112 @@ spec:
                   app: grafana
                   type: grafana-service
                 name: grafana-service
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: cluster-monitoring-view
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: cluster-monitoring-view
+            subjects:
+            - kind: ServiceAccount
+              name: grafana-serviceaccount
+              namespace: o11y
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              annotations:
+                kubernetes.io/service-account.name: grafana-serviceaccount
+              name: grafana-sa-token
+              namespace: o11y
+            type: kubernetes.io/service-account-token
         remediationAction: enforce
         severity: low
   - objectDefinition:
       apiVersion: policy.open-cluster-management.io/v1
       kind: ConfigurationPolicy
       metadata:
-        name: install-hoh-grafana-dashboards
+        name: install-geo-hub-grafana
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: integreatly.org/v1alpha1
+            kind: GrafanaDataSource
+            metadata:
+              name: observatorium-datasource
+              namespace: o11y
+            spec:
+              datasources:
+              - access: proxy
+                editable: true
+                isDefault: true
+                jsonData:
+                  httpHeaderName1: Authorization
+                  timeInterval: 5s
+                  tlsSkipVerify: true
+                name: Prometheus
+                secureJsonData:
+                  httpHeaderValue1: >-
+                    Bearer {{ fromSecret "o11y" "grafana-sa-token" "token" | base64dec }}
+                type: prometheus
+                url: http://rbac-query-proxy.open-cluster-management-observability.svc.cluster.local:8080
+              name: observatorium-datasource.yaml
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: integreatly.org/v1alpha1
+            kind: GrafanaDataSource
+            metadata:
+              name: loki-datasource
+              namespace: o11y
+            spec:
+              datasources:
+              - access: proxy
+                editable: true
+                jsonData:
+                  httpHeaderName1: X-Scope-OrgID
+                  timeInterval: 5s
+                  tlsSkipVerify: true
+                name: Loki
+                secureJsonData:
+                  httpHeaderValue1: application
+                type: loki
+                url: https://logging-loki-query-frontend-http.openshift-logging.svc.cluster.local:3100
+              - access: proxy
+                editable: true
+                jsonData:
+                  httpHeaderName1: X-Scope-OrgID
+                  timeInterval: 5s
+                  tlsSkipVerify: true
+                name: Loki (Audit)
+                secureJsonData:
+                  httpHeaderValue1: audit
+                type: loki
+                url: https://logging-loki-query-frontend-http.openshift-logging.svc.cluster.local:3100
+              - access: proxy
+                editable: true
+                jsonData:
+                  httpHeaderName1: X-Scope-OrgID
+                  timeInterval: 5s
+                  tlsSkipVerify: true
+                name: Loki (Infrastructure)
+                secureJsonData:
+                  httpHeaderValue1: infrastructure
+                type: loki
+                url: https://logging-loki-query-frontend-http.openshift-logging.svc.cluster.local:3100
+              name: loki-datasource.yaml
+        remediationAction: enforce
+        severity: low
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: install-geo-hub-grafana-dashboards
         annotations:
           policy.open-cluster-management.io/disable-templates: "true"
       spec:
@@ -1013,7 +1112,7 @@ spec:
                       },
                       "targets": [
                         {
-                          "expr": "{kubernetes_namespace_name=\"$namespace\"}|json|line_format \"{{.message}}\"",
+                          "expr": "{kubernetes_namespace_name=\"$namespace\"}|json",
                           "refId": "A"
                         }
                       ],
@@ -1908,7 +2007,7 @@ spec:
                       },
                       "targets": [
                         {
-                          "expr": "{kubernetes_namespace_name=\"$namespace\"}|json|line_format \"{{.message}}\"",
+                          "expr": "{kubernetes_namespace_name=\"$namespace\"}|json",
                           "refId": "A"
                         }
                       ],
@@ -3292,7 +3391,7 @@ spec:
                       },
                       "targets": [
                         {
-                          "expr": "{kubernetes_namespace_name=\"$namespace\",kubernetes_pod_name=\"$pod\"}|json|line_format \"{{.message}}\"",
+                          "expr": "{kubernetes_namespace_name=\"$namespace\",kubernetes_pod_name=\"$pod\"}|json",
                           "refId": "A"
                         }
                       ],

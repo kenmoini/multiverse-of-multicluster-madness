@@ -1,0 +1,19 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-install-grafana
+  namespace: rhacm-policies
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: geo-hub-clusters
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: install-geo-hub-grafana-prereqs
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: install-geo-hub-grafana
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: install-geo-hub-grafana-dashboards
