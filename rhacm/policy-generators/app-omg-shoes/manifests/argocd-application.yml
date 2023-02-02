@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-omg-shoes
+  namespace: openshift-gitops
+spec:
+  ignoreDifferences:
+    - group: ""
+      kind: "ConfigMap"
+      jsonPointers:
+        - /data
+  project: helm-installed
+  source:
+    chart: omg-shoes
+    repoURL: https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/
+    targetRevision: 1.0.0
+    helm:
+      releaseName: omg-shoes
+      #valueFiles:
+      #- values.yaml
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      #prune: true
+      allowEmpty: true
+      #selfHeal: false # overrides changes made on the cluster that drift from git state
+    syncOptions:
+      - CreateNamespace=true
