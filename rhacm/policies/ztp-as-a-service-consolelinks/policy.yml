@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: ztpaas-consolelinks-deployed
+  name: ztp-as-a-service-consolelinks
   namespace: rhacm-policies
   annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
