@@ -1,0 +1,3 @@
+resources:
+- oauth-base-config.yml
+- matrix-login-template.yml

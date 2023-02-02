@@ -1,0 +1,84 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-google-auth-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-google-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-google-auth-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-google-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-htpasswd-auth-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-htpasswd-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-htpasswd-auth-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-htpasswd-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-ldap-auth-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-ldap-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: idp-ldap-auth-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: idp-ldap-auth
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []

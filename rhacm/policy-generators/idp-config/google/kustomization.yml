@@ -1,0 +1,8 @@
+bases:
+- ../base
+
+patchesStrategicMerge:
+- google-rh-sso.yml
+
+resources:
+- external-secret.yml

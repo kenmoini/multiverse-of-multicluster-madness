@@ -1,0 +1,7 @@
+bases:
+- ../base
+resources:
+- external-secret.yml
+- ldap-ca-configmap.yml
+patchesStrategicMerge:
+- freeipa-ldap.yml

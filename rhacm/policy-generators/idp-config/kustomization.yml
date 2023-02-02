@@ -1,0 +1,8 @@
+generators:
+  - policygenerator-google.yml
+  - policygenerator-ldap.yml
+  #- policygenerator-htpasswd.yml
+commonLabels:
+  manifest-group: idp-config
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous

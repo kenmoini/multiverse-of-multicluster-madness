@@ -1,0 +1,22 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: idp-ldap-pg
+  #annotations:
+  #  argocd.argoproj.io/compare-options: IgnoreExtraneous
+placementBindingDefaults:
+  name: idp-ldap-pg-pb
+policyDefaults:
+  namespace: rhacm-policies
+  # Use the name of an existing placement rule
+  placement:
+    placementRuleName: idp-ldap-auth-clusters
+  remediationAction: enforce
+  severity: high
+  consolidateManifests: false # Put each object in its own ConfigurationPolicy in the Policy
+  #policySets:
+  #  - idp-ldap
+policies:
+  - name: idp-ldap
+    manifests:
+      - path: ldap
