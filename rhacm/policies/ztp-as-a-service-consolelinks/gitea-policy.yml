@@ -29,7 +29,7 @@ spec:
                 spec:
                   applicationMenu:
                     imageURL: https://upload.wikimedia.org/wikipedia/commons/b/bb/Gitea_Logo.svg
-                    #section: GitOps Tools
+                    section: GitOps Tools
                   href: 'https://{{ ( index ( lookup "route.openshift.io/v1"  "Route" "gitea" "gitea").status.ingress 0 ).host }}'
                   location: ApplicationMenu
                   text: Gitea
