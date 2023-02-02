@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: ztp-as-a-service-consolelinks
+  name: ztp-as-a-service-consolelinks-gitea
   namespace: rhacm-policies
   annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -15,7 +15,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: cs-aap2-controller
+          name: cs-gitea
         spec:
           remediationAction: enforce
           severity: high
@@ -25,12 +25,12 @@ spec:
                 apiVersion: console.openshift.io/v1
                 kind: ConsoleLink
                 metadata:
-                  name: ansible-controller-console-link
+                  name: gitea-console-link
                 spec:
                   applicationMenu:
-                    imageURL: https://upload.wikimedia.org/wikipedia/commons/2/24/Ansible_logo.svg
-                    section: Ansible Automation Platform 2
-                  href: 'https://{{ ( index ( lookup "route.openshift.io/v1"  "Route" "aap2" "ac-tower").status.ingress[0].host ) }}'
+                    imageURL: https://upload.wikimedia.org/wikipedia/commons/b/bb/Gitea_Logo.svg
+                    #section: GitOps Tools
+                  href: 'https://{{ ( index ( lookup "route.openshift.io/v1"  "Route" "gitea" "gitea").status.ingress 0 ).host }}'
                   location: ApplicationMenu
-                  text: Ansible Controller/Tower
+                  text: Gitea
           pruneObjectBehavior: DeleteIfCreated

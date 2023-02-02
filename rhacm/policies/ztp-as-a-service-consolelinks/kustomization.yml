@@ -1,0 +1,3 @@
+resources:
+- aap2-controller-policy.yml
+- gitea-policy.yml

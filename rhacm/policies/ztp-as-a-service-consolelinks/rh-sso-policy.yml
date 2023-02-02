@@ -1,0 +1,36 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: ztp-as-a-service-consolelinks-rh-sso
+  namespace: rhacm-policies
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cs-rh-sso
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: console.openshift.io/v1
+                kind: ConsoleLink
+                metadata:
+                  name: rh-sso-console-link
+                spec:
+                  applicationMenu:
+                    imageURL: https://upload.wikimedia.org/wikipedia/commons/2/29/Keycloak_Logo.png
+                    section: Red Hat applications
+                  href: 'https://{{ ( index ( lookup "route.openshift.io/v1"  "Route" "rh-sso" "rh-sso").status.ingress 0 ).host }}'
+                  location: ApplicationMenu
+                  text: Red Hat Single Sign-On
+          pruneObjectBehavior: DeleteIfCreated
