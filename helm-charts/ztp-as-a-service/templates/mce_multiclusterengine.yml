@@ -1,4 +1,5 @@
 {{- if .Values.rhacm.mce.enabled }}
+---
 ## Unless you need to override things this doesn't need to be applied
 apiVersion: multicluster.openshift.io/v1
 kind: MultiClusterEngine

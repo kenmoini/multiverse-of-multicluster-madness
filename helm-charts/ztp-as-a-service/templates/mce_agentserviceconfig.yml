@@ -1,3 +1,5 @@
+{{- if .Values.rhacm.mce.enabled }}
+---
 apiVersion: agent-install.openshift.io/v1beta1
 kind: AgentServiceConfig
 metadata:
@@ -31,10 +33,14 @@ spec:
   mirrorRegistryRef:
     name: "{{ .Values.mirror_registry.configmapName }}"
 {{- end }}
+  # Get this info from https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.11/release.txt
   osImages:
-  {{- if .Values.http_mirror.enabled }}{{- $live_iso_asset_url := "" -}}{{- $root_fs_asset_url := "" -}}{{- $version := "" -}}{{- end }}
+{{- range .Values.rhacm.releases }}
     - openshiftVersion: "{{ .version }}"
-      version: "{{ .version }}"
-      url: "{{ .live_iso_asset_url }}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live.x86_64.iso"
-      rootFSUrl: "{{ .root_fs_asset_url }}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live-rootfs.x86_64.img"
+      version: "{{ .osVersion }}"
+      url: "{{- template "live-iso-asset-url" -}}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live.x86_64.iso"
+      rootFSUrl: "{{- template "root-fs-asset-url" -}}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live-rootfs.x86_64.img"
       cpuArchitecture: x86_64
+{{- end }}
+
+{{- end }}

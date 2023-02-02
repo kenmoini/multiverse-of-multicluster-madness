@@ -10,6 +10,10 @@ rhacm:
   mce:
     enabled: true
     infraNodes: true
+  # Get this info from https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.11/release.txt
+  releases:
+    - version: 4.11
+      osVersion: 411.86.202301102150-0
 
 aap2:
   configure_controller: true

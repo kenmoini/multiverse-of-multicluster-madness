@@ -1,3 +1,5 @@
+{{- if .Values.rhacm.mce.enabled }}
+---
 apiVersion: hive.openshift.io/v1
 kind: HiveConfig
 metadata:
@@ -11,3 +13,4 @@ spec:
   argoCDConfig:
     enabled: true
     namespace: openshift-gitops
+{{- end }}

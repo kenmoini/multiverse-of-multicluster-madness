@@ -1,4 +1,18 @@
 {{/*
+Determine the remote live-iso-asset-url
+*/}}
+{{- define "live-iso-asset-url" -}}
+{{- if .Values.http_mirror.enabled }}http://ztp-mirror.ztp-mirror.svc{{- else }}https://mirror.openshift.com{{- end }}
+{{- end }}
+
+{{/*
+Determine the remote root-fs-asset-url
+*/}}
+{{- define "root-fs-asset-url" -}}
+{{- if .Values.http_mirror.enabled }}http://ztp-mirror.ztp-mirror.ext{{ else }}https://mirror.openshift.com{{ end }}
+{{- end }}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "ztp-as-a-service.name" -}}
