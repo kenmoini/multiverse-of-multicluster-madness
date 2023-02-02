@@ -20,7 +20,6 @@ spec:
       #- values.yaml
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: kube-system
   syncPolicy:
     automated:
       #prune: true
