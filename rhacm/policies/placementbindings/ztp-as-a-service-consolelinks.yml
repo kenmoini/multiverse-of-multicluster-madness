@@ -9,6 +9,12 @@ placementRef:
   apiGroup: apps.open-cluster-management.io
   kind: PlacementRule
 subjects:
-  - name: ztp-as-a-service-consolelinks
+  - name: ztp-as-a-service-consolelinks-aap2
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+  - name: ztp-as-a-service-consolelinks-gitea
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+  #- name: ztp-as-a-service-consolelinks-rh-sso
+  #  apiGroup: policy.open-cluster-management.io
+  #  kind: Policy
