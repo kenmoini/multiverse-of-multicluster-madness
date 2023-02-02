@@ -134,8 +134,8 @@ spec:
             storage: 8Gi
         storageClassName: ocs-storagecluster-ceph-rbd
         volumeMode: Filesystem
-        hostPath:
-          path: /var/lib/pgsql/data
+        #hostPath:
+        #  path: /var/lib/pgsql/data
   updateStrategy:
     type: RollingUpdate
   revisionHistoryLimit: 10
