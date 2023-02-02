@@ -18,7 +18,7 @@ spec:
     termination: {{ .Values.route.tls.termination }}
   to:
     kind: Service
-    name: http
+    name: {{ .Values.service.name }}
     weight: 100
   wildcardPolicy: None
 {{- end }}

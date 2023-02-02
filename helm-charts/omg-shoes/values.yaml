@@ -39,6 +39,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 8080
+  name: omg-shoes
 
 route:
   enabled: true
