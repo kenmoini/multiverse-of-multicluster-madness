@@ -6,7 +6,7 @@ metadata:
 placementRef:
   apiGroup: apps.open-cluster-management.io
   kind: PlacementRule
-  name: geo-hub-clusters
+  name: o11y-geo-hub-clusters
 subjects:
 - apiGroup: policy.open-cluster-management.io
   kind: Policy

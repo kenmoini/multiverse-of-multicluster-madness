@@ -1,0 +1,28 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: o11y-geo-hub-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: o11y-geo-hub
+        operator: In
+        values:
+          - true
+  clusterConditions: []
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: o11y-geo-hub-clusters
+  namespace: rhacm-applications
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: o11y-geo-hub
+        operator: In
+        values:
+          - true
+  clusterConditions: []
