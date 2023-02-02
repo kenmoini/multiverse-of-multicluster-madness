@@ -1,0 +1,9 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/yamllint.json": [
+      "file:///Users/kemo/Development/multiverse-of-multicluster-madness/rhacm/policy-generators/deploy-lso-odf/base/lso-localvolumediscovery.yml",
+      "file:///Users/kemo/Development/multiverse-of-multicluster-madness/rhacm/policy-generators/deploy-lso-odf/base/lso-localvolumediscovery.yml",
+      "file:///Users/kemo/Development/multiverse-of-multicluster-madness/rhacm/policy-generators/deploy-lso-odf/local-infra-nodes/lso-localvolumediscovery.yml"
+    ]
+  }
+}
