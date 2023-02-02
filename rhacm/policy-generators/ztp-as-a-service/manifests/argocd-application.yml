@@ -13,7 +13,7 @@ spec:
   source:
     chart: ztp-as-a-service
     repoURL: https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/
-    targetRevision: 4.2.2
+    targetRevision: 4.2.3
     helm:
       releaseName: ztp-as-a-service
       #valueFiles:
