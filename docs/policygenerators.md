@@ -147,3 +147,5 @@ spec:
 ```
 
 This is handy because keep in mind we're generating Policies that have their own PlacementRules and Bindings vs what this Application is bound by/to.
+
+Then add to that, being able to take a Policy and wrap it in a PolicyGenerator like what is done in [rhacm/policy-generators/distribute-root-certs](rhacm/policy-generators/distribute-root-certs), allows for a nice way to enforce across architecture tiers of clusters.

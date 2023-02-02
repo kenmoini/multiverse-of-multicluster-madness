@@ -32,50 +32,375 @@ Any combination of Kustomize, Helm, ArgoCD, RHACM Apps, RHACM Policies, and RHAC
 ### Directory Structure
 
 ```
-📦hub-of-hubs
- ┣ 📂01_bootstrap - The first thing applied to the Hub of Hubs cluster
- ┃ ┣ 📂install-external-secrets - Installs OpenShift GitOps (ArgoCD)
- ┃ ┣ 📂install-hashicorp-vault - Installs Hashicorp Vault for Secrets Management
- ┃ ┗ 📂install-openshift-gitops - Installs External Secrets Operator
- ┣ 📂02_gitops-config - After Secrets seeding, this is applied to the Hub of Hubs cluster to start syncing configuration, policies, and workloads via ArgoCD
- ┃ ┣ 📂00_eso-config - Configures the External Secrets Operator to use the in-cluster Vault instance
- ┃ ┣ 📂01_deploy-openshift-gitops - Deploys the OpenShift GitOps (ArgoCD) instance
- ┃ ┗ 📂02_config-openshift-gitops - Configures the OpenShift GitOps (ArgoCD) instance, deploys an ArgoCD Application that points to the public upstream repo on GitHub and the `hub-of-hubs/gitops-apps/` directory
- ┣ 📂gitops-apps - A collection of ArgoCD Applications that load the individual manifest groups from the `hub-of-hubs/composition/` directory, could easily point to separate repos
+📦 multiverse-of-multicluster-madness
+ ┣ 📂 applications - A set of sample applications
+ ┃ ┣ 📂 infinite-mario - A randomly generating Mario-like web browser game
+ ┃ ┃ ┣ 📂 manifests - The traditional YAML manifest files to deploy the application
+ ┃ ┃ ┗ 📜 kustomization.yml - A Kustomize file that targets the files in the manifests folder
+ ┃ ┣ 📂 omg-shoes - A simple HTML application with a display of cool shoes
+ ┃ ┃ ┣ 📂 argocd-application - The ArgoCD Application that will sync down the files in the manifests folder
+ ┃ ┃ ┣ 📂 manifests - The traditional YAML manifest files to deploy the application
+ ┃ ┃ ┣ 📂 rhacm-application - A set of RHACM resources for the AppSub deployment mechanism
+ ┃ ┃ ┣ 📂 site - The site source code
+ ┃ ┃ ┗ 📜 Dockerfile - The Dockerfile to build this simple HTML site
+ ┃ ┗ 📜 README.md - Extra information about the applications
+ ┣ 📂 argocd
+ ┃ ┣ 📂 appProjects - ArgoCD Projects to group Applications, synced via the initial Hub-of-Hubs bootstrap and then also referenced in `rhacm/policy-generators/install-openshift-gitops-operator`
+ ┃ ┗ 📂 gitops-apps - A bunch of ArgoCD Applications that are synced by the App-of-Apps in `hub-of-hubs/02_gitops-config/02_config-openshift-gitops/10_hoh-cluster-apps.yml`
+ ┃ ┃ ┣ 📂 deploy-rhacm-hub - Deploys a standard RHACM Hub
+ ┃ ┃ ┣ 📂 external-secrets - A set of managed External Secrets
+ ┃ ┃ ┣ 📂 hoh-rhacm-base-config - Hub of Hubs RHACM Base Configuration
+ ┃ ┃ ┣ 📂 install-rhacm-operator - Installs the RHACM Operator
+ ┃ ┃ ┣ 📂 reflector-chart-installed - Installs the Reflector Helm Chart
+ ┃ ┃ ┣ 📂 rhacm-applications - Syncs down all the RHACM Applications, some of which are entry points to the RHACM PolicyGenerators
+ ┃ ┃ ┣ 📂 rhacm-channels - Syncs down all the RHACM Channels
+ ┃ ┃ ┣ 📂 rhacm-observability - Syncs down RHACM Observability add-on
+ ┃ ┃ ┣ 📂 rhacm-policies - Syncs down all the RHACM Policies
+ ┃ ┃ ┣ 📂 sealedsecrets-chart-installed - Installs the Sealed Secret Helm Chart
+ ┃ ┃ ┗ 📜 kustomization.yml - Just toggles the individual Applications in this folder
+ ┣ 📂 depreciated - plz ignore
+ ┣ 📂 docs - Helpful words!  Available on https://kenmoini.github.io/multiverse-of-multicluster-madness/
+ ┃ ┣ 📂 chart-repo - A Helm Chart Repository for the Helm Charts, hosted on GitHub Pages
+ ┃ ┣ 📂 cheat-sheets - Some guidance and commands to spray/pray.
+ ┃ ┣ 📂 examples - Useful examples for the comprehension or maintenance of this repo
+ ┃ ┃ ┣ 📂 managedclusters - Example directory structure for imported ManagedClusters
+ ┃ ┃ ┃ ┣ 📂 geo-hubs - Geo Hub level segmentation
+ ┃ ┃ ┃ ┃ ┗ 📂 core-ocp - Geo Hub Cluster
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜 api-and-token.yml - Example of importing a cluster with an API endpoint and Token that was stored in a Vault referenced with an ExternalSecret.
+ ┃ ┃ ┃ ┣ 📂 mcm-cluster-import - A set of YAML Manifests to apply to a cluster that needs to be imported into RHACM/RHACS
+ ┃ ┃ ┃ ┗ 📜 README.md - Information around handling ManagedCluster workflows
+ ┃ ┃ ┗ 📜 vault-helm-values.yml - Example values for the generated Hashicorp Vault Helm Chart, useful for updates
+ ┃ ┣ 📜 generating-vault-yaml.md - How to update the generated Hashicorp Vault Helm Chart
+ ┃ ┣ 📜 how-to-run-this-as-a-demo.md - How to run this as a demo
+ ┃ ┣ 📜 metadata-guide.md - The 411 on Annotations, Labels and Tags
+ ┃ ┗ 📜 policygenerators.md - What even are PolicyGenerators, man?
+ ┣ 📂 hack - Some helpful scripts
+ ┃ ┗ 📜 build-helm-chart-repo.sh - A script that will bundle/package the Helm Charts and process them for hosting.
+ ┣ 📂 helm-charts - A collection of Helm Charts
+ ┃ ┣ 📂 omg-shoes - A templated Helm Chart to deploy the 'OMG Shoes' application
+ ┃ ┃ ┣ 📂 templates - The templated YAML manifests
+ ┃ ┃ ┣ 📜 .helmignore - Things to not template
+ ┃ ┃ ┣ 📜 Chart.yaml - Metadata regarding the Chart
+ ┃ ┃ ┗ 📜 values.yaml - The default values passed when templating the Chart
+ ┃ ┣ 📂 ztp-as-a-service - Helm Chart to deploy ZTP as a Service to clusters
+ ┃ ┃ ┣ 📂 default-templates - The default YAML manifest templates that are provided as a result of running `helm create ztp-as-a-service`
+ ┃ ┃ ┣ 📂 files - Files used as a referenced set of objects in the generation of a ConfigMap
+ ┃ ┃ ┣ 📂 templates - The templated YAML manifests used
+ ┃ ┗ 📜 README.md - More information about the collection of Helm Charts
+ ┣ 📂hub-of-hubs
+ ┃ ┣ 📂01_bootstrap
+ ┃ ┃ ┣ 📂install-external-secrets-operator
+ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┣ 📂install-hashicorp-vault-chart
+ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┣ 📂install-openshift-gitops-operator
+ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┗ 📜kustomization.yaml
+ ┃ ┣ 📂02_gitops-config
+ ┃ ┃ ┣ 📂00_eso-config
+ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┣ 📜05_operatorconfig.yml
+ ┃ ┃ ┃ ┣ 📜10_vault-clustersecretstore.yml
+ ┃ ┃ ┃ ┗ 📜kustomization.yaml
+ ┃ ┃ ┣ 📂01_deploy-openshift-gitops
+ ┃ ┃ ┃ ┣ 📜00_instance.yml
+ ┃ ┃ ┃ ┣ 📜01_configmap.yml
+ ┃ ┃ ┃ ┣ 📜05_rbac.yml
+ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┣ 📂02_config-openshift-gitops
+ ┃ ┃ ┃ ┣ 📜05_repo-externalsecret.yml
+ ┃ ┃ ┃ ┣ 📜05_reposecret.yml
+ ┃ ┃ ┃ ┣ 📜10_hoh-cluster-apps.yml
+ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┗ 📜kustomization.yaml
+ ┃ ┗ 📂99_vault_init
+ ┃ ┃ ┣ 📜00_service_account.yml
+ ┃ ┃ ┣ 📜05_rbac.yml
+ ┃ ┃ ┣ 📜10_job.yml
+ ┃ ┃ ┗ 📜kustomization.yaml
+ ┣ 📂manifests
+ ┃ ┣ 📂additional-trust-bundle
+ ┃ ┃ ┣ 📂policygenerator
+ ┃ ┃ ┃ ┣ 📂base
+ ┃ ┃ ┃ ┃ ┣ 📜base-proxy-config.yml
+ ┃ ┃ ┃ ┃ ┗ 📜root-ca-configmap.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┗ 📜rhacm-app.yaml
  ┃ ┣ 📂external-secrets
- ┃ ┣ 📂rhacm-config
- ┃ ┣ 📂rhacm-installed
+ ┃ ┃ ┣ 📜rhacm-observability-pull-secret.yml
+ ┃ ┃ ┗ 📜rhacm-pull-secrets.yml
+ ┃ ┣ 📂global-rbac
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┣ 📂rolebindings
+ ┃ ┃ ┃ ┃ ┣ 📜cluster-admin-users.yml
+ ┃ ┃ ┃ ┃ ┣ 📜cluster-reader-users.yml
+ ┃ ┃ ┃ ┃ ┗ 📜redis-administrator-users.yml
+ ┃ ┃ ┃ ┗ 📂roles
+ ┃ ┃ ┃ ┃ ┗ 📜redis-administrator.yml
+ ┃ ┣ 📂hoh-rhacm-base-config
+ ┃ ┃ ┣ 📜00_namespaces.yml
+ ┃ ┃ ┣ 📜geo-hub-clusterset.yml
+ ┃ ┃ ┣ 📜hoh-clusterset.yml
+ ┃ ┃ ┗ 📜hoh-local-cluster-annocation.yml
+ ┃ ┣ 📂install-external-secrets-operator
+ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┣ 📂install-hashicorp-vault-chart
+ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┣ 📜10_mappedChart.yml
+ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┣ 📂install-ocp-virt-operator
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┣ 📜05_operatorgroup.yml
+ ┃ ┃ ┃ ┗ 📜10_subscription.yml
+ ┃ ┣ 📂install-pipelines-operator
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┗ 📜10_subscription.yml
+ ┃ ┣ 📂install-redis-ee-operator
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┣ 📜03_scc.yml
+ ┃ ┃ ┃ ┣ 📜05_operatorgroup.yml
+ ┃ ┃ ┃ ┣ 📜07_rbac.yml
+ ┃ ┃ ┃ ┗ 📜10_subscription.yml
+ ┃ ┣ 📂install-reloader-remote-kustomize
+ ┃ ┃ ┗ 📜kustomization.yaml
+ ┃ ┣ 📂install-serverless-operator
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┣ 📜05_operatorgroup.yml
+ ┃ ┃ ┃ ┗ 📜10_subscription.yml
+ ┃ ┣ 📂install-servicemesh-operator
+ ┃ ┃ ┗ 📂manifests
+ ┃ ┃ ┃ ┗ 📜10_subscription.yml
  ┃ ┗ 📂rhacm-observability
- ┗ 📂manifests - A collection of grouped manifests that will be synced to the Hub of Hubs to configure it, the geo-local clusters, as well as their spoke clusters.
- ┃ ┣ 📂external-secrets - Managed Secrets pulled in via External Secrets Operator
- ┃ ┣ 📂additional-trust-bundle - Adds additional Trusted Root Certificate Authorities to OpenShift
- ┃ ┣ 📂idp-base-config - Base OpenShift OAuth Identity Provider configuration
- ┃ ┣ 📂rhacm-installed - Installs the RHACM Operator
- ┃ ┗ 📂rhacm-observability - Installs the RHACM Observability components
- ┗ 📂manifests -
+ ┃ ┃ ┣ 📜00_namespaces.yml
+ ┃ ┃ ┗ 📜05_objectbucketclaim.yml
+ ┣ 📂rhacm
+ ┃ ┣ 📂applications
+ ┃ ┃ ┣ 📂app-infinite-mario
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂app-omg-shoes
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂deploy-aap2-controller
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂deploy-lso-odf
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂deploy-rhacm-hub
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂distribute-root-certs
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yml
+ ┃ ┃ ┣ 📂global-config
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂idp-config
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yml
+ ┃ ┃ ┣ 📂install-aap2-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-gitea-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-lso-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-odf-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-openshift-gitops-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-reflector-chart
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂install-rhacm-operator
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┣ 📂placement-inheritance
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┃ ┗ 📂ztp-as-a-service
+ ┃ ┃ ┃ ┗ 📜rhacm-app.yaml
+ ┃ ┣ 📂channels
+ ┃ ┃ ┗ 📜github-kenmoini-upstream.yml
+ ┃ ┣ 📂policies
+ ┃ ┃ ┣ 📂aws-infra-nodes
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂geo-hub-grafana
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂geo-hub-lokistack
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂geo-hub-multiclusterobservability
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂hoh-grafana
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂placementbindings
+ ┃ ┃ ┃ ┣ 📜aws-infra-nodes.yml
+ ┃ ┃ ┃ ┣ 📜geo-hub-grafana.yml
+ ┃ ┃ ┃ ┣ 📜geo-hub-lokistack.yml
+ ┃ ┃ ┃ ┣ 📜geo-hub-multiclusterobservability.yml
+ ┃ ┃ ┃ ┣ 📜hoh-grafana.yml
+ ┃ ┃ ┃ ┣ 📜rhacs-central-deployed.yml
+ ┃ ┃ ┃ ┣ 📜rhacs-init-bundle-generator-job.yml
+ ┃ ┃ ┃ ┣ 📜rhacs-operator-installed.yml
+ ┃ ┃ ┃ ┗ 📜ztp-as-a-service-consolelinks.yml
+ ┃ ┃ ┣ 📂rhacs-central-deployed
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂rhacs-init-bundle-generator-job
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂rhacs-operator-installed
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┣ 📂rhacs-securedcluster-deployed
+ ┃ ┃ ┃ ┗ 📜policy.yml
+ ┃ ┃ ┗ 📂ztp-as-a-service-consolelinks
+ ┃ ┃ ┃ ┣ 📜aap2-controller-policy.yml
+ ┃ ┃ ┃ ┣ 📜gitea-policy.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜rh-sso-policy.yml
+ ┃ ┗ 📂policy-generators
+ ┃ ┃ ┣ 📂app-omg-shoes
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┗ 📜argocd-application.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂deploy-aap2-controller
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜10_controller_instance.yml
+ ┃ ┃ ┃ ┃ ┣ 📜5_pgsql-unmanaged-deployment.yml
+ ┃ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂deploy-lso-odf
+ ┃ ┃ ┃ ┣ 📂aws
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┗ 📜lso-odf-storagecluster.yml
+ ┃ ┃ ┃ ┣ 📂base
+ ┃ ┃ ┃ ┃ ┣ 📜default-sc.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┣ 📜lso-odf-storagecluster.yml
+ ┃ ┃ ┃ ┃ ┗ 📜lso-odf-storagesystem.yml
+ ┃ ┃ ┃ ┣ 📂local-infra-nodes
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┣ 📜lso-localvolumediscovery.yml
+ ┃ ┃ ┃ ┃ ┣ 📜lso-localvolumeset.yml
+ ┃ ┃ ┃ ┃ ┣ 📜lso-odf-storagecluster.yml
+ ┃ ┃ ┃ ┃ ┗ 📜lso-rook-ceph-operator-config-cm.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📜policygenerator-aws.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator-local-infra-nodes.yml
+ ┃ ┃ ┣ 📂deploy-rhacm-hub
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜20_multiclusterhub.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yaml
+ ┃ ┃ ┃ ┃ ┣ 📜mch-disable-self-managed.yml
+ ┃ ┃ ┃ ┃ ┗ 📜mch-nodeselectors.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂distribute-root-certs
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜configmap-policy.yml
+ ┃ ┃ ┃ ┃ ┣ 📜placementbinding.yml
+ ┃ ┃ ┃ ┃ ┗ 📜secret-policy.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂global-config
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┗ 📜argocd-application-rbac.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂idp-config
+ ┃ ┃ ┃ ┣ 📂base
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┣ 📜matrix-login-template.yml
+ ┃ ┃ ┃ ┃ ┗ 📜oauth-base-config.yml
+ ┃ ┃ ┃ ┣ 📂google
+ ┃ ┃ ┃ ┃ ┣ 📜external-secret.yml
+ ┃ ┃ ┃ ┃ ┣ 📜google-rh-sso.yml
+ ┃ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📂ldap
+ ┃ ┃ ┃ ┃ ┣ 📜external-secret.yml
+ ┃ ┃ ┃ ┃ ┣ 📜freeipa-ldap.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┗ 📜ldap-ca-configmap.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📜policygenerator-google.yml
+ ┃ ┃ ┃ ┣ 📜policygenerator-htpasswd.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator-ldap.yml
+ ┃ ┃ ┣ 📂install-aap2-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┃ ┣ 📜05_operatorgroup.yml
+ ┃ ┃ ┃ ┃ ┣ 📜07_rbac.yml
+ ┃ ┃ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-gitea-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_catalogsource.yml
+ ┃ ┃ ┃ ┃ ┣ 📜05_rbac.yml
+ ┃ ┃ ┃ ┃ ┗ 📜10_subscription.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-lso-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┃ ┣ 📜07_operatorgroup.yml
+ ┃ ┃ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yaml
+ ┃ ┃ ┃ ┃ ┗ 📜operator-nodeselectors.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-odf-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┃ ┣ 📜07_operatorgroup.yml
+ ┃ ┃ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┃ ┃ ┣ 📜cluster_console_config.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yaml
+ ┃ ┃ ┃ ┃ ┗ 📜operator-nodeselectors.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-openshift-gitops-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_namespace.yml
+ ┃ ┃ ┃ ┃ ┣ 📜05_operatorgroup.yml
+ ┃ ┃ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┃ ┃ ┗ 📜kustomization.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-reflector-chart
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┃ ┗ 📜project.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂install-rhacm-operator
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┣ 📜00_namespaces.yml
+ ┃ ┃ ┃ ┃ ┣ 📜05_rbac-hive.yml
+ ┃ ┃ ┃ ┃ ┣ 📜05_rbac_subscriptionadmin.yml
+ ┃ ┃ ┃ ┃ ┣ 📜07_operatorgroup.yml
+ ┃ ┃ ┃ ┃ ┣ 📜10_subscription.yml
+ ┃ ┃ ┃ ┃ ┣ 📜kustomization.yaml
+ ┃ ┃ ┃ ┃ ┗ 📜operator-nodeselectors.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┣ 📂placement-inheritance
+ ┃ ┃ ┃ ┣ 📂placementrules
+ ┃ ┃ ┃ ┃ ┣ 📜all-openshift-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜aws-openshift-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜geo-hub-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜hub-of-hubs-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜idp.yml
+ ┃ ┃ ┃ ┃ ┣ 📜local-cluster.yml
+ ┃ ┃ ┃ ┃ ┣ 📜lso-odf-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜management-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜o11y-geo-hub-clusters.yml
+ ┃ ┃ ┃ ┃ ┣ 📜spoke-cluster.yml
+ ┃ ┃ ┃ ┃ ┗ 📜ztp-as-a-service-clusters.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┃ ┃ ┗ 📂ztp-as-a-service
+ ┃ ┃ ┃ ┣ 📂manifests
+ ┃ ┃ ┃ ┃ ┗ 📜argocd-application.yml
+ ┃ ┃ ┃ ┣ 📜kustomization.yml
+ ┃ ┃ ┃ ┗ 📜policygenerator.yml
+ ┗ 📜README.md - This README file!
 ```
-
-
-- `hub-of-hubs/manifests/`
-  - rhacm-install/ (installs RHACM with OLM CRs on HoH)
-  - rhacm-config/ (sets policies for HoH, those forced on Geos, and forced on their Spokes)
-    - policies/
-      - rhacm-installed/ (vendor=OpenShift)
-      - rhacs-installed/ (vendor=OpenShift)
-      - cluster-alerting/ (vendor=OpenShift) sets up email alerts for cluster health
-      - hoh-rhacs-central-config/ (local-cluster=true) installs RHACS Central on HoH
-      - hoh-rhacm-hub-config/ configures OAS/Observability/etc
-      - hoh-rhacm-managedclusters/ points to a repo of managedclusters to import into RHACM (core-ocp)
-      - geo-rhacm-config/ (cluster-role=geo-cluster) configures OAS/Observability/etc
-      - geo-rhacs-securedcluster/ template to connect Geo to HoH RHACS
-      - geo-idp/ template to set OAuth for Geo IdPs
-      - geo-ztp-config/ (aap2/cert-manager/gitea/gitops/lso/odf/reflector/Job w+ ansible CLI[maybe quay])
-      - spoke-rhacm-config/ (cluster-role=spoke-cluster)
-      - spoke-rhacs-securedcluster/
-      - spoke-idp/
-      - root-ca/ (vendor=OpenShift) sets up a root CA for all clusters
-      - global-rbac/ (allows our users to get access to what they need)
-      - hoh-secret-courier/ (copies secrets from NS on HoH to other OCP clusters' NS')
 
 ---
 
