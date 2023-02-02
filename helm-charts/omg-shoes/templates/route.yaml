@@ -6,7 +6,7 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "omg-shoes.labels" . | nindent 4 }}
-  {{- with .Values.routes.annotations }}
+  {{- with .Values.route.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}

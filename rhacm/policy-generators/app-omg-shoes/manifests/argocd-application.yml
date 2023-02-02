@@ -13,7 +13,7 @@ spec:
   source:
     chart: omg-shoes
     repoURL: https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/
-    targetRevision: 1.0.0
+    targetRevision: 4.2.0
     helm:
       releaseName: omg-shoes
       #valueFiles:
