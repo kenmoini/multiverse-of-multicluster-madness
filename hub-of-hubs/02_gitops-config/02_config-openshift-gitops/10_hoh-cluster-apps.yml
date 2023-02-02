@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: 'https://github.com/kenmoini/multiverse-of-multicluster-madness'
     targetRevision: HEAD
-    path: hub-of-hubs/gitops-apps
+    path: argocd/gitops-apps
     #directory:
     #  recurse: true
     kustomize:

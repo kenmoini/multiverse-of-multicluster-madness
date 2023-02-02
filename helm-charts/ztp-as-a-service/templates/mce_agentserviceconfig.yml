@@ -1,0 +1,40 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+  ### This is the annotation that injects modifications in the Assisted Service pod
+  annotations:
+    unsupported.agent-install.openshift.io/assisted-service-configmap: "assisted-service-config"
+    unsupported.agent-install.openshift.io/assisted-image-service-skip-verify-tls: "true"
+    #service.beta.openshift.io/inject-cabundle: "true"
+###
+spec:
+  databaseStorage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 40Gi
+  filesystemStorage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 40Gi
+  imageStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 40Gi
+{{- if .Values.mirror_registry.enabled }}
+  mirrorRegistryRef:
+    name: "{{ .Values.mirror_registry.configmapName }}"
+{{- end }}
+  osImages:
+  {{- if .Values.http_mirror.enabled }}{{- $live_iso_asset_url := "" -}}{{- $root_fs_asset_url := "" -}}{{- $version := "" -}}{{- end }}
+    - openshiftVersion: "{{ .version }}"
+      version: "{{ .version }}"
+      url: "{{ .live_iso_asset_url }}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live.x86_64.iso"
+      rootFSUrl: "{{ .root_fs_asset_url }}/pub/openshift-v4/x86_64/dependencies/rhcos/{{ .version }}/latest/rhcos-live-rootfs.x86_64.img"
+      cpuArchitecture: x86_64

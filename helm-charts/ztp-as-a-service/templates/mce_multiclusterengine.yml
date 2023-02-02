@@ -1,3 +1,4 @@
+{{- if .Values.rhacm.mce.enabled }}
 ## Unless you need to override things this doesn't need to be applied
 apiVersion: multicluster.openshift.io/v1
 kind: MultiClusterEngine
@@ -32,6 +33,7 @@ spec:
         enabled: false
   targetNamespace: multicluster-engine
 # https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/install/installing#installing-on-infra-node
+{{- if .Values.rhacm.mce.infraNodes }}
   tolerations:
     - effect: NoSchedule
       key: node-role.kubernetes.io/infra
@@ -41,3 +43,5 @@ spec:
       operator: Exists
   nodeSelector:
     node-role.kubernetes.io/infra: ""
+{{- end }}
+{{- end }}

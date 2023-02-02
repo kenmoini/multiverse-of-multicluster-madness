@@ -1,7 +1,6 @@
 apiVersion: hive.openshift.io/v1
 kind: HiveConfig
 metadata:
-  creationTimestamp: null
   name: hive
   labels:
     backplaneconfig.name: multiclusterengine

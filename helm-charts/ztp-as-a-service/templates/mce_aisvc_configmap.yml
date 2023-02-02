@@ -1,0 +1,19 @@
+{{- if .Values.rhacm.mce.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: assisted-service-config
+  namespace: multicluster-engine
+  labels:
+    app: assisted-service
+data:
+  LOG_LEVEL: "debug"
+  AUTH_TYPE: "none"
+  SKIP_CERT_VERIFICATION: "True"
+{{ if .Values.proxy.enabled }}
+  HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
+  HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
+  NO_PROXY: "{{ .Values.proxy.noProxy }}"
+{{- end }}
+{{- end }}

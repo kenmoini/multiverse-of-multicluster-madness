@@ -1,0 +1,10 @@
+{{- if .Values.mirror_registry.enabled }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.mirror_registry.configmapName }}
+  namespace: multicluster-engine
+data:
+{{ (.Files.Glob "foo/*").AsConfig | indent 2 }}
+{{- end }}
