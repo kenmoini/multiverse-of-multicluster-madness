@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: ztp-as-a-service-consolelinks-pb
+  namespace: rhacm-policies
+placementRef:
+  name: ztp-as-a-service-clusters
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: ztp-as-a-service-consolelinks
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

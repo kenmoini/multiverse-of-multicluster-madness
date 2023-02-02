@@ -19,7 +19,7 @@ controlPlane:
   name: master
   platform:
     aws:
-      type: m5.2xlarge
+      type: m5.4xlarge
   replicas: 3
 metadata:
   creationTimestamp: null
