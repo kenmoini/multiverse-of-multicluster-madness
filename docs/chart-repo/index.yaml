@@ -3,9 +3,9 @@ entries:
   omg-shoes:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-02-01T16:12:59.186348-06:00"
+    created: "2023-02-01T18:00:44.92623-06:00"
     description: A Helm chart for Kubernetes that deploys a simple HTML application
-    digest: 7b9fa8324bf9f1f59b303ebe7fcd6aa4a30a15a88569dd68d79d1d87c073f85c
+    digest: 26be8ba2b37e95c55b7bfc4758b50e3565e6272d639dbe5cb5461b973ceeb8a4
     name: omg-shoes
     type: application
     urls:
@@ -13,8 +13,18 @@ entries:
     version: 1.0.0
   ztp-as-a-service:
   - apiVersion: v2
+    appVersion: 4.2.2
+    created: "2023-02-01T18:00:44.928443-06:00"
+    description: A Helm chart for Kubernetes
+    digest: 377f5526051d5aaf53dfdeef954548b6c1068fec89c72e22195e5e2134f940fc
+    name: ztp-as-a-service
+    type: application
+    urls:
+    - https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/ztp-as-a-service-4.2.2.tgz
+    version: 4.2.2
+  - apiVersion: v2
     appVersion: 4.2.1
-    created: "2023-02-01T16:12:59.187903-06:00"
+    created: "2023-02-01T18:00:44.928091-06:00"
     description: A Helm chart for Kubernetes
     digest: ee44cf868fd783ad55da6929bf9ccb27fde368a9035831ef84736bfbf894a641
     name: ztp-as-a-service
@@ -24,7 +34,7 @@ entries:
     version: 4.2.1
   - apiVersion: v2
     appVersion: 4.2.0
-    created: "2023-02-01T16:12:59.187528-06:00"
+    created: "2023-02-01T18:00:44.927533-06:00"
     description: A Helm chart for Kubernetes
     digest: 4c18dcba82909644bfb5c1a52f91c7bdb762bb59d93331ea9df57171cbb0afaa
     name: ztp-as-a-service
@@ -34,7 +44,7 @@ entries:
     version: 4.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-02-01T16:12:59.186695-06:00"
+    created: "2023-02-01T18:00:44.926951-06:00"
     description: A Helm chart for Kubernetes
     digest: e97c18f591dde2b8fa98d0fd1562ed145597a800c7d96b7e4f432aa924e2047c
     name: ztp-as-a-service
@@ -42,4 +52,4 @@ entries:
     urls:
     - https://kenmoini.github.io/multiverse-of-multicluster-madness/chart-repo/ztp-as-a-service-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-01T16:12:59.186005-06:00"
+generated: "2023-02-01T18:00:44.925599-06:00"
