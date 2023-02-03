@@ -7,4 +7,4 @@ resources:
   - 05_operatorgroup.yml
   - 10_subscription.yml
   - ../../../../hub-of-hubs/02_gitops-config/01_deploy-openshift-gitops/
-  - ../../../../hub-of-hubs/02_gitops-config/02_config-openshift-gitops/argocd-appProjects/
+  - ../../../../argocd/appProjects/
