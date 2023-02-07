@@ -49,10 +49,10 @@ spec:
         key: node-role.kubernetes.io/infra
         operator: Equal
         value: "reserved"
-      - effect: NoSchedule
-        key: node.ocs.openshift.io/storage
-        operator: Equal
-        value: "true"
+      #- effect: NoSchedule
+      #  key: node.ocs.openshift.io/storage
+      #  operator: Equal
+      #  value: "true"
     mds:
       tolerations:
       - effect: NoSchedule
@@ -63,10 +63,10 @@ spec:
         key: node-role.kubernetes.io/infra
         operator: Equal
         value: "reserved"
-      - effect: NoSchedule
-        key: node.ocs.openshift.io/storage
-        operator: Equal
-        value: "true"
+      #- effect: NoSchedule
+      #  key: node.ocs.openshift.io/storage
+      #  operator: Equal
+      #  value: "true"
     noobaa-core:
       tolerations:
       - effect: NoSchedule
@@ -77,10 +77,10 @@ spec:
         key: node-role.kubernetes.io/infra
         operator: Equal
         value: "reserved"
-      - effect: NoSchedule
-        key: node.ocs.openshift.io/storage
-        operator: Equal
-        value: "true"
+      #- effect: NoSchedule
+      #  key: node.ocs.openshift.io/storage
+      #  operator: Equal
+      #  value: "true"
     rgw:
       tolerations:
       - effect: NoSchedule
@@ -91,7 +91,7 @@ spec:
         key: node-role.kubernetes.io/infra
         operator: Equal
         value: "reserved"
-      - effect: NoSchedule
-        key: node.ocs.openshift.io/storage
-        operator: Equal
-        value: "true"
+      #- effect: NoSchedule
+      #  key: node.ocs.openshift.io/storage
+      #  operator: Equal
+      #  value: "true"
