@@ -5,7 +5,7 @@ metadata:
   name: redis-enterprise-operator-cert
   namespace: redis-enterprise-operator
 spec:
-  channel: stable
+  channel: production
   installPlanApproval: Automatic
   name: redis-enterprise-operator-cert
   source: certified-operators
