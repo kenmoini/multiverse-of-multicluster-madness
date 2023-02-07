@@ -13,7 +13,12 @@ metadata:
 spec:
   #version: 4.9.0
   storageDeviceSets:
-    - dataPVCTemplate:
+    - name: ocs-deviceset-odf
+      count: 3
+      config: {}
+      preparePlacement: {}
+      replica: 1
+      dataPVCTemplate:
         spec:
           accessModes:
             - ReadWriteOnce
@@ -22,7 +27,8 @@ spec:
               storage: '1'
           storageClassName: odf
           volumeMode: Block
-      name: ocs-deviceset-odf
+        status: {}
+      placement: {}
       resources:
         limits:
           cpu: '2'
