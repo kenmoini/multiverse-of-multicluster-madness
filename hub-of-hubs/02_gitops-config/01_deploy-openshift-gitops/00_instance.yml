@@ -22,7 +22,7 @@ spec:
       - configMap:
           name: cluster-root-ca-bundle
         name: cluster-root-ca-bundle
-        optional: true
+        #optional: true
   controller:
     processors: {}
     resources:
