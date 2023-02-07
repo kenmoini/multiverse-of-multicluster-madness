@@ -7,6 +7,14 @@ metadata:
   name: odf
   namespace: openshift-local-storage
 spec:
+  deviceInclusionSpec:
+    deviceTypes:
+      - disk
+      - part
+    minSize: 1Gi
+  volumeMode: Block
+  storageClassName: odf
+  # This is where things would likely be different for different environments with different selectors
   nodeSelector:
     nodeSelectorTerms:
       - matchExpressions:
