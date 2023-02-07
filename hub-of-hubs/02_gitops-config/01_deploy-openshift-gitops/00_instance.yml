@@ -6,6 +6,7 @@ metadata:
   namespace: openshift-gitops
 spec:
   repo:
+    # Some sane resource limits
     resources:
       limits:
         cpu: 1000m
@@ -13,12 +14,38 @@ spec:
       requests:
         cpu: 250m
         memory: 256Mi
-    # Volume mounts the OCP Cluster baked trusted root store
+    # The env definition and initContainer (paired with the Volume Mounts) are required to
+    # install the PolicyGenerator binary into the ArgoCD container. 
+    env:
+    - name: KUSTOMIZE_PLUGIN_HOME
+      value: /etc/kustomize/plugin
+    # Before the repo container starts, copy the PolicyGenerator binary into the ArgoCD container via the emptyDir Volume
+    initContainers:
+    - args:
+      - -c
+      - cp /etc/kustomize/plugin/policy.open-cluster-management.io/v1/policygenerator/PolicyGenerator
+        /policy-generator/PolicyGenerator
+      command:
+      - /bin/bash
+      #image: registry.redhat.io/rhacm2/multicluster-operators-subscription-rhel8:v<version>
+      image: registry.redhat.io/rhacm2/multicluster-operators-subscription-rhel8:v2.6
+      name: policy-generator-install
+      volumeMounts:
+      - mountPath: /policy-generator
+        name: policy-generator
     volumeMounts:
-    - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
-      subPath: ca-bundle.crt
-      name: cluster-root-ca-bundle
+      # This Volume mounts the PolicyGenerator binary from the initContainer
+      - mountPath: /etc/kustomize/plugin/policy.open-cluster-management.io/v1/policygenerator
+        name: policy-generator
+      # This Volume mounts the OCP Cluster baked trusted root store
+      - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+        subPath: ca-bundle.crt
+        name: cluster-root-ca-bundle
     volumes:
+      # This just defines an emptyDir volume to be shared by the initContainer and the main repo container
+      - emptyDir: {}
+        name: policy-generator
+      # This mounts the OCP Cluster baked trusted root store
       - configMap:
           name: cluster-root-ca-bundle
         name: cluster-root-ca-bundle
@@ -142,7 +169,7 @@ spec:
       - effect: NoExecute
         key: node-role.kubernetes.io/infra
         operator: Exists
-  kustomizeBuildOptions: '--enable-helm --helm-command "/usr/local/bin/helm --insecure-skip-tls-verify"'
+  kustomizeBuildOptions: '--enable-alpha-plugins --enable-helm --helm-command "/usr/local/bin/helm --insecure-skip-tls-verify"'
   kustomizeVersions:
     # you can get the updated version by running the `kustomize version` command in the argocd-server pod
     # or from https://docs.openshift.com/container-platform/4.12/cicd/gitops/gitops-release-notes.html
