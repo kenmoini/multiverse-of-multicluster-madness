@@ -1,0 +1,13 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: 'system:openshift:scc:rhacm-machineconfig-admin'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'system:openshift:scc:rhacm-machineconfig-admin'
+subjects:
+  - kind: ServiceAccount
+    name: governance-policy-framework-sa
+    namespace: open-cluster-management-agent-addon
