@@ -1,0 +1,9 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rhacm-machineconfig-admin
+rules:
+  - apiGroups: ["machineconfiguration.openshift.io", ""]
+    resources: ["MachineConfig"]
+    verbs: ["delete", "deletecollection", "get", "list", "patch", "create", "update", "watch"]
