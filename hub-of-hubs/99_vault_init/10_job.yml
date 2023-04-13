@@ -15,8 +15,8 @@ spec:
             drop:
             - ALL
           runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
+          #seccompProfile:
+          #  type: RuntimeDefault
         env:
           - name: VAULT_ADDR
             value: http://vault.vault.svc:8200
@@ -51,8 +51,8 @@ spec:
             drop:
             - ALL
           runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
+          # seccompProfile:
+          #   type: RuntimeDefault
         command:
         - /bin/sh
         - -c
