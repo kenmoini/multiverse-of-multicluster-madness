@@ -5,6 +5,7 @@
 
 global:
   openshift: true
+  namespace: vault
 
 injector:
   image:
